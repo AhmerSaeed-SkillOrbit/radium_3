@@ -16,7 +16,7 @@ class Login extends CI_Controller {
 
     public function index($msg = NULL) {
         if ($this->session->userdata('loginID') != NULL) {
-            redirect('http://localhost/projects/PremierTowels/yarnmodule/');
+            redirect('http://localhost:800/projects/PremierTowels/radium_3/yarnmodule/');
         } else {
             $data['msg'] = $msg;
             $this->load->view('v_login', $data);
@@ -33,7 +33,7 @@ class Login extends CI_Controller {
         } else {
             // If user did validate, 
             // Send them to members area
-            redirect('http://localhost/projects/PremierTowels/yarnmodule/');
+            redirect('http://localhost:800/projects/PremierTowels/radium_3/yarnmodule/');
         }
     }
 

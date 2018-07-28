@@ -14,7 +14,7 @@
 | path to your installation.
 |
 */
-$config['base_url']	= 'http://localhost:800/projects/PremierTowels/';
+$config['base_url']	= 'http://localhost:800/projects/PremierTowels/radium_3/';
 
 /*
 |--------------------------------------------------------------------------
