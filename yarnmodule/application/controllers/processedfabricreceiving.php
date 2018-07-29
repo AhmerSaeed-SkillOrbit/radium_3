@@ -10,7 +10,13 @@ class Processedfabricreceiving extends CI_Controller {
 
     public function __construct() {
         parent::__construct();
-        $this->load->model('m_yarndelivery');
+
+        $this->load->model('m_itemspecification');
+        $this->load->model('m_partycreation');
+        $this->load->model('m_warehouse');
+        $this->load->model('m_processedfabricreceiving');
+        $this->load->model('m_customerorder');
+
         $this->load->model('m_yarndelivery');
         $this->load->model('m_partytype');
         $this->load->model('m_countcreation');
@@ -20,44 +26,98 @@ class Processedfabricreceiving extends CI_Controller {
     }
 
     function index() {
-        
+
+        $dataArray = array();
+        $itemSpecsModel = new M_itemspecification();
+        $warehouseModel = new M_warehouse();
+        $customerOrderModel = new M_customerorder();
+        $myModel = new My_Model();
+
         $dataArray['insertMessage'] = $this->session->flashdata('insertmessage');
         $dataArray['updateMessage'] = $this->session->flashdata('updatemessage');
         $dataArray['deleteMessage'] = $this->session->flashdata('deletemessage');
+
+        $dataArray['itemList'] = $itemSpecsModel->getAllItems();
+        $dataArray['processorList'] = $myModel->getPartyType('DYEING');
+        $dataArray['warehouseCombo'] = $warehouseModel->getAllwarehouse();
+        $dataArray['customerOrders'] = $customerOrderModel->getAllActiveCustomerOrderInfo();
+
         $this->load->view('header');
         $this->load->view('v_processedfabricreceiving', $dataArray);
         $this->load->view('footer');
     }
 
     function Add() {
-
-        $yarnDeliveryModel = new M_yarndelivery();
+        $processedFabricReceivingModel = new M_processedfabricreceiving();
         $myModel = new My_Model();
-        $challanID = $this->input->post('DeliveryChalanNumber');
-        $purposeID = $this->input->post('idPurpose');
-        $yarnDeliveryData = array(
-            'ChallanDate' => date("Y-m-d", strtotime($this->input->post('ChallanDate'))),
-            'DeliveryChallanNo' => trim($this->input->post('DeliveryChalanNumber')),
-            'GatePassNo' => trim($this->input->post('GatePassNumber')),
-            'VehicleNo' => trim($this->input->post('VehicleNumber')),
-            'Party_id' => $this->input->post('idPartyType'),
-            'Purpose_id' => $this->input->post('idPurpose'),
-            'TotalBags' => trim($this->input->post('TotalBags')),
-            'TotalWeight' => trim(str_replace(',', '', $this->input->post('TotalWeight'))),
+
+        $totalPieces = 0;
+        $totalRolls = 0;
+
+        $processedFabricReceivingData = array();
+        $serialNo = $this->input->post('SerialNoDetail');
+        $Pieces = $this->input->post('Pieces');
+        $Rolls = $this->input->post('Rolls');
+        $Color = $this->input->post('Color');
+        $customer_order_id = $this->input->post('PONumber');
+        $item = $this->input->post('ItemCode');
+        $warehouse_id = $this->input->post('warehouse');
+
+        for ($Count = 0; $Count < count($serialNo); $Count++) {
+
+            $totalPieces = $totalPieces + $Pieces[$Count];
+            $totalRolls = $totalRolls + $Rolls[$Count];
+        }
+
+        $processedFabricReceivingData = array(
+            'ProcessedFabricReceivingNo' => $this->input->post('PFRNo'),
+            'ReceivingDate' => date("Y-m-d", strtotime($this->input->post('ReceivingDate'))),
+            'ChallanNo' => $this->input->post('ChallanNo'),
+            'GatePassNo' => NULL,
+            'VehicleNo' => $this->input->post('VehicleNo'),
+            'TotalPieces' => $totalPieces,
+            'TotalRolls' => $totalRolls,
+            'party_id' => $this->input->post('ProcessorName'),
+            'ReceivedBy' => $this->input->post('ReceivedBy'),
+            'DriverName' => $this->input->post('DriverName'),
             'CreatedDate' => $myModel->getFieldsValue()['CreatedDate'],
             'ModifiedDate' => $myModel->getFieldsValue()['ModifiedDate'],
             'isActive' => $myModel->getFieldsValue()['isActive']
         );
-        $insertYarnDelivery = $yarnDeliveryModel->InsertYarnDelivery($yarnDeliveryData);
-        $removeStock = $yarnDeliveryModel->RemoveStock($challanID);
-        $addLedger = $yarnDeliveryModel->insertYarnledger($challanID);
-        if ($purposeID == 1) {
-            $addWeaverLedger = $yarnDeliveryModel->InsertWeavingLegder($challanID);
+
+        $inserted = $processedFabricReceivingModel->InsertProcessedFabricReceiving($processedFabricReceivingData);
+
+        if ($inserted) {
+            for ($Count = 0; $Count < count($serialNo); $Count++) {
+                $processedFabricReceivingDetailData[] = array(
+                    'Pieces' => $Pieces[$Count],
+                    'Rolls' => $Rolls[$Count],
+                    'item_id' => $item[$Count],
+                    'warehouse_id' => $warehouse_id[$Count],
+                    'customer_order_id' => $customer_order_id[$Count],
+                    'Color' => $Color[$Count],
+                    'processed_fabric_receiving_id' => $inserted,
+                    'CreatedDate' => $myModel->getFieldsValue()['CreatedDate'],
+                    'ModifiedDate' => $myModel->getFieldsValue()['ModifiedDate'],
+                    'isActive' => $myModel->getFieldsValue()['isActive']
+                );
+            }
+            $processedFabricReceivingModel->InsertProcessedFabricReceivingDetail($processedFabricReceivingDetailData);
+//            $gfrID = $inserted;
+//            $this->insertItemLedger($gfrID);
+//            $this->insertItemStock($gfrID);
+        } else {
+            $inserted = 0;
         }
+        if ($inserted) {
+            $insertItemMsg = "Successfully Inserted";
+        } else {
+            $insertItemMsg = "Failed to Insert";
+        }
+
         $this->session->set_flashdata('operation', '1');
-        $this->session->set_flashdata('challanNo', $challanID);
-        $this->session->set_flashdata('insertmessage', '<h4 style="background-color:white;color:black;margin-left: 0px;margin-top: 05px;width: 390px;text-align: left;">' . $insertYarnDelivery . '</h4>');
-        redirect(base_url() . "index.php/yarndelivery/index");
+        $this->session->set_flashdata('insertmessage', $insertItemMsg);
+        redirect(base_url() . "index.php/processedfabricreceiving/index");
     }
 
     function Update() {
@@ -155,7 +215,7 @@ class Processedfabricreceiving extends CI_Controller {
         $this->load->view('printgatepass', $dataArray);
         $this->load->view('footer');
     }
-    
+
     function getStockQuantity() {
         $yarnDeliveryModel = new M_yarndelivery();
         $countID = $this->input->post('countID');
@@ -167,7 +227,7 @@ class Processedfabricreceiving extends CI_Controller {
         $stockQuantity = json_encode($data);
         echo $stockQuantity;
     }
-    
+
     function downloadCSV($value) {
         $dataArray = array();
         $yarnDeliveryModel = new M_yarndelivery();
