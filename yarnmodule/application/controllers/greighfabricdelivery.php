@@ -51,11 +51,11 @@ class GreighFabricDelivery extends CI_Controller {
     function Add() {
         $greighFabricModel = new M_greighfabricdelivery();
         $myModel = new My_Model();
-        
+
         $totalPieces = 0;
         $totalWeight = 0.00;
         $totalRolls = 0;
-        
+
         $greighFabricDeliveryDetailData = array();
         $serialNo = $this->input->post('SerialNoDetail');
         $Pieces = $this->input->post('Pieces');
@@ -64,14 +64,14 @@ class GreighFabricDelivery extends CI_Controller {
         $customer_order_id = $this->input->post('PONumber');
         $item = $this->input->post('ItemCode');
         $warehouse_id = $this->input->post('warehouse');
-        
+
         for ($Count = 0; $Count < count($serialNo); $Count++) {
 
             $totalPieces = $totalPieces + $Pieces[$Count];
             $totalWeight = $totalWeight + $Weight[$Count];
             $totalRolls = $totalRolls + $Rolls[$Count];
         }
-        
+
         $greighFabricDeliveryData = array(
             'GreighFabricDeliveryNo' => $this->input->post('GFDC'),
             'DeliveryDate' => date("Y-m-d", strtotime($this->input->post('GreighFabricDated'))),
@@ -90,7 +90,7 @@ class GreighFabricDelivery extends CI_Controller {
             'ModifiedDate' => $myModel->getFieldsValue()['ModifiedDate'],
             'isActive' => $myModel->getFieldsValue()['isActive']
         );
-        
+
         $inserted = $greighFabricModel->InsertGreighFabricDelivery($greighFabricDeliveryData);
 
         if ($inserted) {
@@ -99,7 +99,7 @@ class GreighFabricDelivery extends CI_Controller {
                     'Pieces' => $Pieces[$Count],
                     'Weight' => $Weight[$Count],
                     'Rolls' => $Rolls[$Count],
-                    'item_id' => $item[$Count], 
+                    'item_id' => $item[$Count],
                     'warehouse_id' => $warehouse_id[$Count],
                     'customer_order_id' => $customer_order_id[$Count],
                     'greigh_fabric_delivery_id' => $inserted,
@@ -112,8 +112,7 @@ class GreighFabricDelivery extends CI_Controller {
             $gfrID = $inserted;
             $this->insertItemLedger($gfrID);
             $this->insertItemStock($gfrID);
-        }
-        else {
+        } else {
             $inserted = 0;
         }
         if ($inserted) {
@@ -331,17 +330,17 @@ class GreighFabricDelivery extends CI_Controller {
         echo $gfrData;
     }
 
-    function insertSingleItemLedger($gfdID, $pieces){
+    function insertSingleItemLedger($gfdID, $pieces) {
         $myModel = new My_Model();
         $greighFabricModel = new M_greighfabricdelivery();
         $greighFabricData = array(
             'party_id' => $this->input->post('ProcessorName'),
             'item_id' => $this->input->post('item_id'),
             'TransactionDate' => date("Y-m-d", strtotime($this->input->post('GreighFabricDated'))),
-            'Description' => "Item issued against GreighFabric Delivery No. ". $this->input->post('GFDC'),
+            'Description' => "Item issued against GreighFabric Delivery No. " . $this->input->post('GFDC'),
             'ItemIssued' => $pieces,
             'ItemReceived' => 0,
-            'greigh_fabric_delivery_id' => $gfdID,   
+            'greigh_fabric_delivery_id' => $gfdID,
             'CreatedDate' => $myModel->getFieldsValue()['CreatedDate'],
             'ModifiedDate' => $myModel->getFieldsValue()['ModifiedDate'],
             'user_id' => 0
@@ -349,37 +348,37 @@ class GreighFabricDelivery extends CI_Controller {
         $greighFabricModel->insertItemledger($greighFabricData);
     }
 
-    function insertItemLedger($gfdID){
+    function insertItemLedger($gfdID) {
         $myModel = new My_Model();
         $greighFabricModel = new M_greighfabricdelivery();
         $item_id = $this->input->post('ItemCode');
         $pieces = $this->input->post('Pieces');
-        
-        for ($count = 0; $count < count($item_id); $count++){
-             $greighFabricData = array(
+
+        for ($count = 0; $count < count($item_id); $count++) {
+            $greighFabricData = array(
                 'party_id' => $this->input->post('ProcessorName'),
                 'item_id' => $item_id[$count],
                 'TransactionDate' => date("Y-m-d", strtotime($this->input->post('GreighFabricDated'))),
-                'Description' => "Item issued against GreighFabric Delivery No. ". $this->input->post('GFDC'),
+                'Description' => "Item issued against GreighFabric Delivery No. " . $this->input->post('GFDC'),
                 'ItemIssued' => $pieces[$count],
                 'ItemReceived' => 0,
-                'greigh_fabric_delivery_id' => $gfdID,   
+                'greigh_fabric_delivery_id' => $gfdID,
                 'CreatedDate' => $myModel->getFieldsValue()['CreatedDate'],
                 'ModifiedDate' => $myModel->getFieldsValue()['ModifiedDate'],
                 'user_id' => 0
             );
             $greighFabricModel->insertItemledger($greighFabricData);
-        }     
+        }
     }
 
-    function updateSingleItemLedger($gfdID, $pieces){
+    function updateSingleItemLedger($gfdID, $pieces) {
         $myModel = new My_Model();
         $greighFabricModel = new M_greighfabricdelivery();
         $greighFabricData = array(
             'party_id' => $this->input->post('ProcessorName'),
             'item_id' => $this->input->post('item_id'),
             'TransactionDate' => date("Y-m-d", strtotime($this->input->post('date'))),
-            'Description' => "Item issued against GreighFabric Delivery No. ". $this->input->post('GFDC'),
+            'Description' => "Item issued against GreighFabric Delivery No. " . $this->input->post('GFDC'),
             'ItemIssued' => $pieces,
             'ItemReceived' => 0,
             'ModifiedDate' => $myModel->getFieldsValue()['ModifiedDate'],
@@ -387,15 +386,15 @@ class GreighFabricDelivery extends CI_Controller {
         );
         $greighFabricModel->updateItemledger($greighFabricData, $gfdID);
     }
-    
-    function insertSingleItemStock($gfdID, $pieces){
+
+    function insertSingleItemStock($gfdID, $pieces) {
         $myModel = new My_Model();
         $greighFabricModel = new M_greighfabricdelivery();
         $greighFabricData = array(
             'item_id' => $_POST['item_id'],
             'warehouse_id' => $_POST['warehouse_id'],
             'TransactionDate' => date("Y-m-d", strtotime($_POST['GreighFabricDated'])),
-            'TransactionType' => "OUT",            
+            'TransactionType' => "OUT",
             'Quantity' => ($pieces * -1),
             'greigh_fabric_delivery_detail_id' => $gfdID,
             'CreatedDate' => $myModel->getFieldsValue()['CreatedDate'],
@@ -404,20 +403,20 @@ class GreighFabricDelivery extends CI_Controller {
         );
         $greighFabricModel->insertItemStock($greighFabricData);
     }
-    
-     function insertItemStock($gfdID){
+
+    function insertItemStock($gfdID) {
         $myModel = new My_Model();
         $greighFabricModel = new M_greighfabricdelivery();
         $item_id = $this->input->post('ItemCode');
         $warehouse_id = $this->input->post('warehouse');
         $pieces = $this->input->post('Pieces');
-        
-        for ($count = 0; $count < count($item_id); $count++){
+
+        for ($count = 0; $count < count($item_id); $count++) {
             $greighFabricData = array(
                 'item_id' => $item_id[$count],
                 'warehouse_id' => $warehouse_id[$count],
                 'TransactionDate' => date("Y-m-d", strtotime($_POST['GreighFabricDated'])),
-                'TransactionType' => "OUT",            
+                'TransactionType' => "OUT",
                 'Quantity' => ($pieces[$count] * -1),
                 'greigh_fabric_delivery_detail_id' => $gfdID,
                 'CreatedDate' => $myModel->getFieldsValue()['CreatedDate'],
@@ -427,20 +426,20 @@ class GreighFabricDelivery extends CI_Controller {
             $greighFabricModel->insertItemStock($greighFabricData);
         }
     }
-   
-    function updateSingleItemStock($gfdID, $pieces){
+
+    function updateSingleItemStock($gfdID, $pieces) {
         $myModel = new My_Model();
         $greighFabricModel = new M_greighfabricdelivery();
         $greighFabricData = array(
             'item_id' => $_POST['item_id'],
             'warehouse_id' => $_POST['warehouse_id'],
             'TransactionDate' => date("Y-m-d", strtotime($_POST['date'])),
-            'TransactionType' => "OUT",            
+            'TransactionType' => "OUT",
             'Quantity' => $pieces * -1,
             'ModifiedDate' => $myModel->getFieldsValue()['ModifiedDate'],
             'user_id' => 0
         );
         $greighFabricModel->updateItemStock($greighFabricData, $gfdID);
     }
-    
+
 }
