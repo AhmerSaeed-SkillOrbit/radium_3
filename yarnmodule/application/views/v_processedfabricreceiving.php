@@ -51,9 +51,9 @@ include 'include/leftmenu.php';
                                 <div id="" class="pull-left col-xs-12 col-sm-6 col-md-6" style="margin-top: 20px;">
                                     <label for="">PFR #</label>
                                     <input id="PFRNo" name="PFRNo" type="text"  value="<?php
-//                                    if ($pfrNo) {
-//                                        echo $pfrNo;
-//                                    }
+                                    if ($pfr) {
+                                        echo $pfr;
+                                    }
                                     ?>" class="form-control" placeholder="" readonly>
                                 </div>
                                 <div id='' class='pull-right col-xs-12 col-sm-6 col-md-6' style='margin-top: 20px;'> 

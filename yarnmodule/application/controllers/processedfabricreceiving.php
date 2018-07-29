@@ -31,6 +31,7 @@ class Processedfabricreceiving extends CI_Controller {
         $itemSpecsModel = new M_itemspecification();
         $warehouseModel = new M_warehouse();
         $customerOrderModel = new M_customerorder();
+        $processedFabricReceivingModel = new M_processedfabricreceiving();
         $myModel = new My_Model();
 
         $dataArray['insertMessage'] = $this->session->flashdata('insertmessage');
@@ -41,7 +42,13 @@ class Processedfabricreceiving extends CI_Controller {
         $dataArray['processorList'] = $myModel->getPartyType('DYEING');
         $dataArray['warehouseCombo'] = $warehouseModel->getAllwarehouse();
         $dataArray['customerOrders'] = $customerOrderModel->getAllActiveCustomerOrderInfo();
-
+        $dataArray['pfr'] = $processedFabricReceivingModel->generatePFRNumber();
+        
+        $dataArray['description'] = $this->session->flashdata('description');
+        $dataArray['rolls'] = $this->session->flashdata('rolls');
+        $dataArray['pieces'] = $this->session->flashdata('pieces');
+        $dataArray['color'] = $this->session->flashdata('color');
+        
         $this->load->view('header');
         $this->load->view('v_processedfabricreceiving', $dataArray);
         $this->load->view('footer');

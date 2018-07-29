@@ -14,7 +14,7 @@ class M_processedfabricreceiving extends My_Model {
     }
     
     function generatePFRNumber() {
-        $number = $this->generateNumber('greigh_fabric_delivery', 'MAX(GreighFabricDeliveryNo)+1');
+        $number = $this->generateNumber('processed_fabric_receiving', 'MAX(ProcessedFabricReceivingNo)+1');
         if ($number != NULL) {
             $gfdNumber = $number;
             return $gfdNumber;
