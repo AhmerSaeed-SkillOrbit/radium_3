@@ -42,5 +42,4 @@ class Login extends CI_Controller {
         $this->session->sess_destroy();
         redirect(base_url() . "index.php/login/index");
     }
-
 }

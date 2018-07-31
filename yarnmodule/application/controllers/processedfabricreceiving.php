@@ -37,18 +37,18 @@ class Processedfabricreceiving extends CI_Controller {
         $dataArray['insertMessage'] = $this->session->flashdata('insertmessage');
         $dataArray['updateMessage'] = $this->session->flashdata('updatemessage');
         $dataArray['deleteMessage'] = $this->session->flashdata('deletemessage');
-
+        $dataArray['pfrList'] = $processedFabricReceivingModel->getAllActiveProcessedFabricReceivingInfo();
         $dataArray['itemList'] = $itemSpecsModel->getAllItems();
         $dataArray['processorList'] = $myModel->getPartyType('DYEING');
         $dataArray['warehouseCombo'] = $warehouseModel->getAllwarehouse();
         $dataArray['customerOrders'] = $customerOrderModel->getAllActiveCustomerOrderInfo();
         $dataArray['pfr'] = $processedFabricReceivingModel->generatePFRNumber();
-        
+
         $dataArray['description'] = $this->session->flashdata('description');
         $dataArray['rolls'] = $this->session->flashdata('rolls');
         $dataArray['pieces'] = $this->session->flashdata('pieces');
         $dataArray['color'] = $this->session->flashdata('color');
-        
+
         $this->load->view('header');
         $this->load->view('v_processedfabricreceiving', $dataArray);
         $this->load->view('footer');
@@ -126,30 +126,30 @@ class Processedfabricreceiving extends CI_Controller {
         $this->session->set_flashdata('insertmessage', $insertItemMsg);
         redirect(base_url() . "index.php/processedfabricreceiving/index");
     }
-    
-    function insertItemLedger($pfrID){
+
+    function insertItemLedger($pfrID) {
         $myModel = new My_Model();
         $processedFabricReceivingModel = new M_processedfabricreceiving();
         $item_id = $this->input->post('ItemCode');
         $pieces = $this->input->post('Pieces');
-        
-        for ($count = 0; $count < count($item_id); $count++){
-             $processedFabricReceivingData = array(
+
+        for ($count = 0; $count < count($item_id); $count++) {
+            $processedFabricReceivingData = array(
                 'party_id' => $this->input->post('ProcessorName'),
                 'item_id' => $item_id[$count],
                 'TransactionDate' => date("Y-m-d", strtotime($this->input->post('ReceivingDate'))),
-                'Description' => "Item received against Processed Fabric Receiving No. ". $this->input->post('PFRNo'),
+                'Description' => "Item received against Processed Fabric Receiving No. " . $this->input->post('PFRNo'),
                 'ItemIssued' => 0,
                 'ItemReceived' => $pieces[$count],
-                'processed_fabric_receiving_id' => $pfrID,   
+                'processed_fabric_receiving_id' => $pfrID,
                 'CreatedDate' => $myModel->getFieldsValue()['CreatedDate'],
                 'ModifiedDate' => $myModel->getFieldsValue()['ModifiedDate'],
                 'user_id' => 0
             );
             $processedFabricReceivingModel->insertItemledger($processedFabricReceivingData);
-        }     
+        }
     }
-    
+
     function insertItemStock($pfrId) {
         $myModel = new My_Model();
         $processedFabricReceivingModel = new M_processedfabricreceiving();

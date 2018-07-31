@@ -228,6 +228,7 @@ include 'include/leftmenu.php';
     var selectedWarehouse = "";
     var brandValue = "";
     var stockElement;
+
     function populateGridRows() {
         var deliverItemsCount = 0;
         var countRows = $("#receivingItemsGrid> tbody").children().length;
@@ -260,6 +261,7 @@ include 'include/leftmenu.php';
             resetSNO();
         }
     }
+
     function deleteGridRows(r) {
         var itemsCount = 0;
         var i = r.parentNode.parentNode.rowIndex;
@@ -298,5 +300,89 @@ include 'include/leftmenu.php';
         });
     }
 
+    function retrivePopup() {
+    formMode = "Retrieve";
+            $("#EditAnchor").removeAttr("disabled");
+            $("#PrintAnchor").removeAttr("disabled");
+            bootbox.dialog({
+            title: "Processed Fabric Receiving",
+                    message: "<fieldset>" +
+                    "<div class='box box-primary'>" +
+                    "<div class='box-body'>" +
+                    "<form name='processedFabricReceivingFormEdit' role='' method='' action='' class=''>" +
+                    "<br><div class='col-md-12'>" +
+                    "<div class='pull-left col-md-2'>" +
+                    "<label>Search</label>" +
+                    "</div>" +
+                    "<div class='pull-left col-md-4'>" +
+                    "<input id='searchProcessedFabricReceiving' name='searchProcessedFabricReceiving' type='text' class='form-control' onkeyup='search()' placeholder='Search by PFR No.' style='width:200px;margin-left:-100px;'>" +
+                    "<input id='SearchNow' type='button' value='OK' class='btn btn-primary' onclick='search()' style='width: 100px;margin-left: 110px;margin-top:-58px;'>" +
+                    "</div>" +
+                    "</div><br><br><br>" +
+                    "<fieldset>" +
+                    "<div class='box-body table-responsive'>" +
+                    "<div class='box'>" +
+                    "<table class='table table-bordered table-striped'>" +
+                    "<thead>" +
+                    "<tr>" +
+                    "<th width='10%'>PFR No.</th>" +
+                    "<th width='10%'>Receiving Date</th>" +
+                    "<th width='10%'>Processor Name</th>" +
+                    "<th width='10%'>Total Pieces</th>" +
+                    "<th width='10%'>Total Rolls</th>" +
+                    "<th width='10%'>Driver Name</th>" +
+                    "<th width='10%'>Vehicle No</th>" +
+                    "<th width='10%'>Challan No</th>" +
+                    "<th width='10%'>Receiver By</th>" +
+                    "<th width='10%'>Details</th>" +
+                    "</tr>" +
+                    "</thead>" +
+                    "<tbody id='GreighFabricDeliveryTbody'>" +<?php
+                                                        foreach ($pfrList as $key) {
+                                                            ?>
+                "<tr>" +
+                        "<td><?= $key['ProcessedFabricReceivingNo'] ?></td>" +
+                        "<td><?= $key['ReceivingDate'] ?></td>" +
+                        "<td><?= $key['CompanyName'] ?></td>" +
+                        "<td><?= number_format($key['TotalPieces']) ?></td>" +
+                        "<td><?= number_format($key['TotalRolls']) ?></td>" +
+                        "<td><?= $key['VehicleNo'] ?></td>" +
+                        "<td><?= $key['DriverName'] ?></td>" +
+                        "<td><?= $key['ChallanNo'] ?></td>" +
+                        "<td><?= $key['ReceivedBy'] ?></td>" +
+                        "<td><a data-dismiss='modal' style='cursor: pointer;' onclick =ediForm('<?= $key['processed_fabric_receiving_id'] ?>','<?= rawurlencode($key['ProcessedFabricReceivingNo']) ?>','<?= rawurlencode($key['ReceivingDate']) ?>','<?= rawurlencode($key['CompanyName']) ?>','<?= rawurlencode($key['ChallanNo']) ?>','<?= rawurlencode($key['ChallanNo']) ?>','<?= rawurlencode($key['TotalPieces']) ?>','<?= rawurlencode($key['TotalPieces']) ?>','<?= rawurlencode($key['TotalRolls']) ?>','<?= rawurlencode($key['TotalPieces']) ?>','<?= rawurlencode($key['ReceivedBy']) ?>','<?= rawurlencode($key['TotalPieces']) ?>','<?= rawurlencode($key['VehicleNo']) ?>','<?= $key['TotalPieces'] ?>','<?= $key['TotalPieces'] ?>','None')>Edit</a>" +
+                        "<span> | </span>" +
+                        "<a style='cursor: pointer;' href='<?= base_url() ?>index.php/processedfabricreceiving/Delete/<?= $key['processed_fabric_receiving_id'] ?>'>Delete</a>" +
+                        "</td>" +
+                        "</tr>" +<?php } ?>
+            "</tbody>" +
+                    "<tfoot>" +
+                    "<tr>" +
+                    "<th></th>" +
+                    "<th></th>" +
+                    "<th></th>" +
+                    "<th></th>" +
+                    "<th></th>" +
+                    "<th></th>" +
+                    "<th></th>" +
+                    "<th></th>" +
+                    "<th></th>" +
+                    "<th></th>" +
+                    "</tr>" +
+                    "</tfoot>" +
+                    "</table>" +
+                    "</div>" +
+                    "</div>" +
+                    "</fieldset>" +
+                    "</form>" +
+                    "</div>" +
+                    "</div>" +
+                    "</fieldset>"
+            });
+            $('.modal-content').css({
+    "width": '1210px',
+            "margin-left": '-180px'
+    });
+    }
 
 </script>
