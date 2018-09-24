@@ -61,7 +61,6 @@ class Processedfabricreceiving extends CI_Controller {
         $totalPieces = 0;
         $totalRolls = 0;
 
-        $processedFabricReceivingData = array();
         $serialNo = $this->input->post('SerialNoDetail');
         $Pieces = $this->input->post('Pieces');
         $Rolls = $this->input->post('Rolls');
@@ -175,32 +174,114 @@ class Processedfabricreceiving extends CI_Controller {
 
     function Update() {
 
-        $yarnDeliveryModel = new M_yarndelivery();
+        $processedFabricReceivingModel = new M_processedfabricreceiving();
         $myModel = new My_Model();
-        $yarnDeliveryID = $this->input->post('DeliveryChalanID');
-        $yarnDeliveryNo = $this->input->post('DeliveryChalanNumber');
-        $purposeID = $this->input->post('idPurpose');
-        $yarnDeliveryData = array(
-            'ChallanDate' => date("Y-m-d", strtotime($this->input->post('ChallanDate'))),
-            'DeliveryChallanNo' => trim($this->input->post('DeliveryChalanNumber')),
-            'GatePassNo' => trim($this->input->post('GatePassNumber')),
-            'VehicleNo' => trim($this->input->post('VehicleNumber')),
-            'Party_id' => $this->input->post('idPartyType'),
-            'Purpose_id' => $this->input->post('idPurpose'),
-            'TotalBags' => trim($this->input->post('TotalBags')),
-            'TotalWeight' => trim(str_replace(',', '', $this->input->post('TotalWeight'))),
+
+        $totalPieces = 0;
+        $totalRolls = 0;
+
+        $processedFabricReceivingId = $this->input->post('processed_fabric_receiving_id');
+        $serialNo = $this->input->post('SerialNoDetail');
+        $Pieces = $this->input->post('Pieces');
+        $Rolls = $this->input->post('Rolls');
+        $Color = $this->input->post('Color');
+        $customer_order_id = $this->input->post('PONumber');
+        $item = $this->input->post('ItemCode');
+        $warehouse_id = $this->input->post('warehouse');
+
+        for ($Count = 0; $Count < count($serialNo); $Count++) {
+
+            $totalPieces = $totalPieces + $Pieces[$Count];
+            $totalRolls = $totalRolls + $Rolls[$Count];
+        }
+
+        $processedFabricReceivingData = array(
+            'ReceivingDate' => date("Y-m-d", strtotime($this->input->post('ReceivingDate'))),
+            'ChallanNo' => $this->input->post('ChallanNo'),
+            'GatePassNo' => NULL,
+            'VehicleNo' => $this->input->post('VehicleNo'),
+            'TotalPieces' => $totalPieces,
+            'TotalRolls' => $totalRolls,
+            'party_id' => $this->input->post('ProcessorName'),
+            'ReceivedBy' => $this->input->post('ReceivedBy'),
+            'DriverName' => $this->input->post('DriverName'),
             'ModifiedDate' => $myModel->getFieldsValue()['ModifiedDate']
         );
-        $updateYarnDelivery = $yarnDeliveryModel->UpdateYarnDelivery($yarnDeliveryID, $yarnDeliveryData);
-        $updateStock = $yarnDeliveryModel->UpdateStock($yarnDeliveryNo);
-        $updateLedger = $yarnDeliveryModel->UpdateYarnledger($yarnDeliveryNo);
-        if ($purposeID == 1) {
-            $updateWeaverLedger = $yarnDeliveryModel->UpdateWeavingLegder($yarnDeliveryNo);
+        $updateProcessedFabricReceivingData = $processedFabricReceivingModel->UpdateProcessedFabricReceiving($processedFabricReceivingId, $processedFabricReceivingData);
+        if ($updateProcessedFabricReceivingData) {
+            for ($Count = 0; $Count < count($serialNo); $Count++) {
+                $processedFabricReceivingDetailData[] = array(
+                    'Pieces' => $Pieces[$Count],
+                    'Rolls' => $Rolls[$Count],
+                    'item_id' => $item[$Count],
+                    'warehouse_id' => $warehouse_id[$Count],
+                    'customer_order_id' => $customer_order_id[$Count],
+                    'Color' => $Color[$Count],
+                    'processed_fabric_receiving_id' => $processedFabricReceivingId,
+                    'CreatedDate' => $myModel->getFieldsValue()['CreatedDate'],
+                    'ModifiedDate' => $myModel->getFieldsValue()['ModifiedDate'],
+                    'isActive' => $myModel->getFieldsValue()['isActive']
+                );
+            }
+            $updateDetailData = $processedFabricReceivingModel->UpdateProcessedFabricReceivingDetail($processedFabricReceivingId, $processedFabricReceivingDetailData);
+            if ($updateDetailData) {
+                
+            }
+            $this->session->set_flashdata('updatemessage', $processedFabricReceivingData);
+            redirect(base_url() . "index.php/processedfabricreceiving/index");
+        } else {
+            $this->session->set_flashdata('updatemessage', FALSE);
+            redirect(base_url() . "index.php/processedfabricreceiving/index");
         }
-        $this->session->set_flashdata('operation', '2');
-        $this->session->set_flashdata('challanNo', $yarnDeliveryNo);
-        $this->session->set_flashdata('updatemessage', $updateYarnDelivery);
-        redirect(base_url() . "index.php/yarndelivery/index");
+//        $updateStock = $yarnDeliveryModel->UpdateStock($yarnDeliveryNo);
+//        $updateLedger = $yarnDeliveryModel->UpdateYarnledger($yarnDeliveryNo);
+//        if ($purposeID == 1) {
+//            $updateWeaverLedger = $yarnDeliveryModel->UpdateWeavingLegder($yarnDeliveryNo);
+//        }
+
+        $this->session->set_flashdata('updatemessage', $processedFabricReceivingData);
+        redirect(base_url() . "index.php/processedfabricreceiving/index");
+    }
+
+    function updateItemLedger($pfrID) {
+        $myModel = new My_Model();
+        $processedFabricReceivingModel = new M_processedfabricreceiving();
+        $item_id = $this->input->post('ItemCode');
+        $pieces = $this->input->post('Pieces');
+
+        for ($count = 0; $count < count($item_id); $count++) {
+            $processedFabricReceivingData = array(
+                'party_id' => $this->input->post('ProcessorName'),
+                'item_id' => $item_id[$count],
+                'ItemReceived' => $pieces[$count],
+                'processed_fabric_receiving_id' => $pfrID,
+                'ModifiedDate' => $myModel->getFieldsValue()['ModifiedDate'],
+                'user_id' => 0
+            );
+            $processedFabricReceivingModel->updateItemledger($processedFabricReceivingData);
+        }
+    }
+
+    function updateItemStock($pfrId) {
+        //think logic if rows exceed from insert
+        
+        $myModel = new My_Model();
+        $processedFabricReceivingModel = new M_processedfabricreceiving();
+        $item_id = $this->input->post('ItemCode');
+        $warehouse_id = $this->input->post('warehouse');
+        $pieces = $this->input->post('Pieces');
+
+        for ($count = 0; $count < count($item_id); $count++) {
+            $processedFabricReceivingData = array(
+                'item_id' => $item_id[$count],
+                'warehouse_id' => $warehouse_id[$count],
+                'Quantity' => ($pieces[$count] * +1),
+                'processed_fabric_receiving_detail_id' => $pfrId,
+                'ModifiedDate' => $myModel->getFieldsValue()['ModifiedDate'],
+                'user_id' => 0
+            );
+            $processedFabricReceivingModel->updateItemStock($processedFabricReceivingData);
+        }
     }
 
     function Delete($yarnDeliveryID) {
@@ -227,69 +308,10 @@ class Processedfabricreceiving extends CI_Controller {
         echo $yarnDeliveryData;
     }
 
-    function save() {
-        $myModel = new My_Model();
-        $insertPopupData = $myModel->savePartyFromPopup();
-        if ($insertPopupData === "Party of this Name is already exist") {
-            echo $insertPopupData;
-        } else {
-            if ($insertPopupData) {
-                echo "Successfully Inserted ";
-            } else {
-                echo "Failed to Insert";
-            }
-        }
-    }
-
     function reloadCombo() {
         $partyCreationModel = new M_partycreation();
         $resulData = $partyCreationModel->getAllParty();
         echo json_encode($resulData);
-    }
-
-    function printYarnDelivery($value) {
-        $dataArray = array();
-        $yarnDeliveryModel = new M_yarndelivery();
-        $yarnGrnSearch = $yarnDeliveryModel->searchYarnDelivery($value);
-        $dataArray['data'] = $yarnGrnSearch;
-        $dataArray['gatePassData'] = $yarnGrnSearch;
-        $this->load->view('header');
-        $this->load->view('printyarndelivery', $dataArray);
-        $this->load->view('footer');
-    }
-
-    function printGatePass() {
-        $dataArray = array();
-        $yarnDeliveryModel = new M_yarndelivery();
-        $search = $this->input->post('DeliveryChalanNumber');
-        $yarnGrnSearch = $yarnDeliveryModel->searchYarnDelivery($search);
-        $dataArray['data'] = $yarnGrnSearch;
-        $this->load->view('header');
-        $this->load->view('printgatepass', $dataArray);
-        $this->load->view('footer');
-    }
-
-    function getStockQuantity() {
-        $yarnDeliveryModel = new M_yarndelivery();
-        $countID = $this->input->post('countID');
-        $millID = $this->input->post('millID');
-        $brand = $this->input->post('brand');
-        $warehouseID = $this->input->post('warehouseID');
-        $challanID = $this->input->post('deliveryChalanID');
-        $data = $yarnDeliveryModel->getStock($countID, $millID, $brand, $warehouseID, $challanID);
-        $stockQuantity = json_encode($data);
-        echo $stockQuantity;
-    }
-
-    function downloadCSV($value) {
-        $dataArray = array();
-        $yarnDeliveryModel = new M_yarndelivery();
-        $fileName = "PremierTowels-YarnDelivery-" . $value . ".csv";
-        $yarnDeliverySearch = $yarnDeliveryModel->searchYarnDelivery($value);
-        $dataArray['data'] = $yarnDeliverySearch;
-        $dataArray['fileName'] = $fileName;
-        $dataArray['type'] = "YarnDelivery";
-        $this->load->view('excel', $dataArray);
     }
 
 }

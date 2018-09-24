@@ -90,6 +90,7 @@ include 'include/leftmenu.php';
                                 <div id="" class="pull-left col-xs-12 col-sm-6 col-md-6" style="margin-top: 20px;">
                                     <label for="">Receiver Name</label>
                                     <input id="ReceivedBy" name="ReceivedBy" type="text" class="form-control" placeholder="Receiver Name"  style="" required>
+                                    <input id="processed_fabric_receiving_id" name="processed_fabric_receiving_id" type="hidden" value="">
                                 </div>
                             </div>
                         </fieldset>   
@@ -350,7 +351,7 @@ include 'include/leftmenu.php';
                         "<td><?= $key['DriverName'] ?></td>" +
                         "<td><?= $key['ChallanNo'] ?></td>" +
                         "<td><?= $key['ReceivedBy'] ?></td>" +
-                        "<td><a data-dismiss='modal' style='cursor: pointer;' onclick =ediForm('<?= $key['processed_fabric_receiving_id'] ?>','<?= rawurlencode($key['ProcessedFabricReceivingNo']) ?>','<?= rawurlencode($key['ReceivingDate']) ?>','<?= rawurlencode($key['CompanyName']) ?>','<?= rawurlencode($key['ChallanNo']) ?>','<?= rawurlencode($key['ChallanNo']) ?>','<?= rawurlencode($key['TotalPieces']) ?>','<?= rawurlencode($key['TotalPieces']) ?>','<?= rawurlencode($key['TotalRolls']) ?>','<?= rawurlencode($key['TotalPieces']) ?>','<?= rawurlencode($key['ReceivedBy']) ?>','<?= rawurlencode($key['TotalPieces']) ?>','<?= rawurlencode($key['VehicleNo']) ?>','<?= $key['TotalPieces'] ?>','<?= $key['TotalPieces'] ?>','None')>Edit</a>" +
+                        "<td><a data-dismiss='modal' style='cursor: pointer;' onclick =ediForm('<?= $key['processed_fabric_receiving_id'] ?>','<?= rawurlencode($key['ProcessedFabricReceivingNo']) ?>','<?= rawurlencode($key['ReceivingDate']) ?>','<?= rawurlencode($key['CompanyName']) ?>','<?= rawurlencode($key['ChallanNo']) ?>','<?= rawurlencode($key['TotalPieces']) ?>','<?= rawurlencode($key['TotalPieces']) ?>','<?= rawurlencode($key['TotalRolls']) ?>','<?= rawurlencode($key['TotalPieces']) ?>','<?= rawurlencode($key['ReceivedBy']) ?>','<?= rawurlencode($key['TotalPieces']) ?>','<?= rawurlencode($key['VehicleNo']) ?>','<?= $key['TotalPieces'] ?>','<?= $key['TotalPieces'] ?>','None')>Edit</a>" +
                         "<span> | </span>" +
                         "<a style='cursor: pointer;' href='<?= base_url() ?>index.php/processedfabricreceiving/Delete/<?= $key['processed_fabric_receiving_id'] ?>'>Delete</a>" +
                         "</td>" +
@@ -384,5 +385,79 @@ include 'include/leftmenu.php';
             "margin-left": '-180px'
     });
     }
+    
+    function ediForm(greighFabricReceivingID, greighFabricReceivingNo, date, partyName, challanNo, itemCode, totalPieces, totalWeight, totalRolls, warehouse, avgLbsPerDozen, gramPerPiece, heavyLightPercent, receivedBy, issueToProcessor, processorName, issueBy, deliveryReceivedBy, vehicleNo, greighFabricDeliveryID, type) {
+        if (type === 'editmenu') {
+            formMode = "Edit";
+            var action = "<?php echo base_url() ?>index.php/greighfabricreceiving/Update";
+            enableElements("#GreighFabricReceivingNo");
+            enableElements("#GreighFabricDated");            
+            enableElements("#PartyName");
+            enableElements("#ChallanNo");
+            enableElements("#ItemCode");
+            enableElements("#TotalPieces");
+            enableElements("#TotalWeight");
+            enableElements("#TotalRolls");
+            enableElements("#warehouse");
+            enableElements("#ReceivedBy");
+            enableElements("#confirmDelivery");
+//            enableElements("#ProcessorName");
+//            enableElements("#IssueBy");
+//            enableElements("#DeliveryReceivedBy");
+//            enableElements("#VehicleNo");
+            document.getElementById("greighFabricReceivingForm").action = action;            
+        }
+        else
+        {
+            resetForm();
+            $("#greigh_fabric_receiving_id").val(greighFabricReceivingID);
+            $("#GreighFabricReceivingNo").val(decodeURI(greighFabricReceivingNo));
+            $("#ChallanNo").val(decodeURI(challanNo));
+            $("#GreighFabricDated").val(getFormatedDate(decodeURI(date)));
+            $("#TotalPieces").val(decodeURI(totalPieces));
+            $("#TotalWeight").val(decodeURI(totalWeight));
+            $("#TotalRolls").val(decodeURI(totalRolls));
+            $("#AvgLbsPerDozen").val(decodeURI(avgLbsPerDozen));
+            $("#GramPerPiece").val(decodeURI(gramPerPiece));
+            $("#HeavyLight").val(decodeURI(heavyLightPercent));
+            $("#ReceivedBy").val(decodeURI(receivedBy));
+            //$("#confirmDelivery").val(decodeURI(issueToProcessor));
+            $('#confirmDelivery option').filter(function() {
+                return ($(this).val() === decodeURI(issueToProcessor));
+            }).prop('selected', true);
+            $('#PartyName option').filter(function() {
+                return ($(this).text() === decodeURI(partyName));
+            }).prop('selected', true);
+            $('#ItemCode option').filter(function() {
+                return ($(this).text() === decodeURI(itemCode));
+            }).prop('selected', true);
+            $('#warehouse option').filter(function() {
+                return ($(this).text() === decodeURI(warehouse));
+            }).prop('selected', true);
+            populateItemInfo();
+            disableElements("#GreighFabricReceivingNo");
+            disableElements("#ChallanNo");
+            disableElements("#GreighFabricDated");            
+            disableElements("#PartyName");
+            disableElements("#ItemCode");
+            disableElements("#TotalPieces");
+            disableElements("#TotalWeight");
+            disableElements("#TotalRolls");
+            disableElements("#warehouse");
+            disableElements("#ReceivedBy");
+//            disableElements("#confirmDelivery");
+            $("#greigh_fabric_delivery_id").val(greighFabricDeliveryID);
+//            $('#ProcessorName option').filter(function() {
+//                return ($(this).text() === decodeURI(processorName));
+//            }).prop('selected', true);
+//            $("#IssueBy").val(decodeURI(issueBy));
+//            $("#DeliveryReceivedBy").val(decodeURI(deliveryReceivedBy));
+//            $("#VehicleNo").val(decodeURI(vehicleNo));
+//            disableElements("#ProcessorName");
+//            disableElements("#IssueBy");
+//            disableElements("#DeliveryReceivedBy");
+//            disableElements("#VehicleNo");                      
+        }
+    
 
 </script>

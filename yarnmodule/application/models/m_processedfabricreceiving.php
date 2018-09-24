@@ -102,9 +102,9 @@ class M_processedfabricreceiving extends My_Model {
         return $insert;
     }
     
-    function updateItemledger($itemLedgerData, $gfdID) {
+    function updateItemledger($itemLedgerData, $pfrId) {
         $myModel = new My_Model();
-        $update = $myModel->Update('item_ledger', $itemLedgerData, 'greigh_fabric_delivery_id', $gfdID);
+        $update = $myModel->Update('item_ledger', $itemLedgerData, 'processed_fabric_receiving_id', $pfrId);
         return $update;
     }
     
@@ -114,9 +114,9 @@ class M_processedfabricreceiving extends My_Model {
         return $insert;
     }
     
-    function updateItemStock($itemStockData, $gfdID) {
+    function updateItemStock($itemStockData, $pfrId) {
         $myModel = new My_Model();
-        $update = $myModel->Update('item_stock', $itemStockData, 'greigh_fabric_delivery_id', $gfdID);
+        $update = $myModel->Update('item_stock', $itemStockData, 'processed_fabric_receiving_id', $$pfrId);
         return $update;
     }
     
