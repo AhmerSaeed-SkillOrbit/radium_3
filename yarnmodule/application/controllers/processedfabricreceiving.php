@@ -111,7 +111,8 @@ class Processedfabricreceiving extends CI_Controller {
             $processedFabricReceivingModel->InsertProcessedFabricReceivingDetail($processedFabricReceivingDetailData);
             $pfrID = $inserted;
             $this->insertItemLedger($pfrID);
-            $this->insertItemStock($pfrID);
+            $this->insertItemStock($pfrID, 0);
+            $this->insertMainStock(0, $totalPieces);
         } else {
             $inserted = 0;
         }
@@ -126,7 +127,7 @@ class Processedfabricreceiving extends CI_Controller {
         redirect(base_url() . "index.php/processedfabricreceiving/index");
     }
 
-    function insertItemLedger($pfrID) {
+    function insertItemLedger($pfrID, $userId) {
         $myModel = new My_Model();
         $processedFabricReceivingModel = new M_processedfabricreceiving();
         $item_id = $this->input->post('ItemCode');
@@ -143,13 +144,13 @@ class Processedfabricreceiving extends CI_Controller {
                 'processed_fabric_receiving_id' => $pfrID,
                 'CreatedDate' => $myModel->getFieldsValue()['CreatedDate'],
                 'ModifiedDate' => $myModel->getFieldsValue()['ModifiedDate'],
-                'user_id' => 0
+                'user_id' => $userId
             );
             $processedFabricReceivingModel->insertItemledger($processedFabricReceivingData);
         }
     }
 
-    function insertItemStock($pfrId) {
+    function insertItemStock($pfrId, $userId) {
         $myModel = new My_Model();
         $processedFabricReceivingModel = new M_processedfabricreceiving();
         $item_id = $this->input->post('ItemCode');
@@ -166,10 +167,26 @@ class Processedfabricreceiving extends CI_Controller {
                 'processed_fabric_receiving_detail_id' => $pfrId,
                 'CreatedDate' => $myModel->getFieldsValue()['CreatedDate'],
                 'ModifiedDate' => $myModel->getFieldsValue()['ModifiedDate'],
-                'user_id' => 0
+                'user_id' => $userId
             );
             $processedFabricReceivingModel->insertItemStock($processedFabricReceivingData);
         }
+    }
+
+    function insertMainStock($userId, $totalPieces) {
+        $myModel = new My_Model();
+        $processedFabricReceivingModel = new M_processedfabricreceiving();
+        $processedFabricReceivingData = array(
+            'item_id' => $this->input->post('ItemCode'),
+            'TransactionDate' => date("Y-m-d", strtotime($this->input->post('ReceivingDate'))),
+            'TransactionType' => "IN",
+            'TransactionReferenceNo' => 'PFR-' . $this->input->post('PFRNo'),
+            'ItemQuantity' => $totalPieces,
+            'CreatedDate' => $myModel->getFieldsValue()['CreatedDate'],
+            'ModifiedDate' => $myModel->getFieldsValue()['ModifiedDate'],
+            'user_id' => $userId
+        );
+        $processedFabricReceivingModel->insertMainStock($processedFabricReceivingData);
     }
 
     function Update() {
@@ -180,7 +197,7 @@ class Processedfabricreceiving extends CI_Controller {
         $totalPieces = 0;
         $totalRolls = 0;
 
-        $processedFabricReceivingId = $this->input->post('processed_fabric_receiving_id');
+        $pfrId = $this->input->post('processed_fabric_receiving_id');
         $serialNo = $this->input->post('SerialNoDetail');
         $Pieces = $this->input->post('Pieces');
         $Rolls = $this->input->post('Rolls');
@@ -207,7 +224,7 @@ class Processedfabricreceiving extends CI_Controller {
             'DriverName' => $this->input->post('DriverName'),
             'ModifiedDate' => $myModel->getFieldsValue()['ModifiedDate']
         );
-        $updateProcessedFabricReceivingData = $processedFabricReceivingModel->UpdateProcessedFabricReceiving($processedFabricReceivingId, $processedFabricReceivingData);
+        $updateProcessedFabricReceivingData = $processedFabricReceivingModel->UpdateProcessedFabricReceiving($pfrId, $processedFabricReceivingData);
         if ($updateProcessedFabricReceivingData) {
             for ($Count = 0; $Count < count($serialNo); $Count++) {
                 $processedFabricReceivingDetailData[] = array(
@@ -217,15 +234,18 @@ class Processedfabricreceiving extends CI_Controller {
                     'warehouse_id' => $warehouse_id[$Count],
                     'customer_order_id' => $customer_order_id[$Count],
                     'Color' => $Color[$Count],
-                    'processed_fabric_receiving_id' => $processedFabricReceivingId,
+                    'processed_fabric_receiving_id' => $pfrId,
                     'CreatedDate' => $myModel->getFieldsValue()['CreatedDate'],
                     'ModifiedDate' => $myModel->getFieldsValue()['ModifiedDate'],
                     'isActive' => $myModel->getFieldsValue()['isActive']
                 );
             }
-            $updateDetailData = $processedFabricReceivingModel->UpdateProcessedFabricReceivingDetail($processedFabricReceivingId, $processedFabricReceivingDetailData);
+            $updateDetailData = $processedFabricReceivingModel->UpdateProcessedFabricReceivingDetail($pfrId, $processedFabricReceivingDetailData);
             if ($updateDetailData) {
-                
+                $pfrID = $updateDetailData;
+                $this->insertItemLedger($pfrID);
+                $this->insertItemStock($pfrID, 0);
+                $this->insertMainStock(0, $totalPieces);
             }
             $this->session->set_flashdata('updatemessage', $processedFabricReceivingData);
             redirect(base_url() . "index.php/processedfabricreceiving/index");
@@ -243,7 +263,7 @@ class Processedfabricreceiving extends CI_Controller {
         redirect(base_url() . "index.php/processedfabricreceiving/index");
     }
 
-    function updateItemLedger($pfrID) {
+    function updateItemLedger($pfrID, $userId) {
         $myModel = new My_Model();
         $processedFabricReceivingModel = new M_processedfabricreceiving();
         $item_id = $this->input->post('ItemCode');
@@ -256,15 +276,13 @@ class Processedfabricreceiving extends CI_Controller {
                 'ItemReceived' => $pieces[$count],
                 'processed_fabric_receiving_id' => $pfrID,
                 'ModifiedDate' => $myModel->getFieldsValue()['ModifiedDate'],
-                'user_id' => 0
+                'user_id' => $userId
             );
             $processedFabricReceivingModel->updateItemledger($processedFabricReceivingData);
         }
     }
 
-    function updateItemStock($pfrId) {
-        //think logic if rows exceed from insert
-        
+    function updateItemStock($pfrId, $userId) {
         $myModel = new My_Model();
         $processedFabricReceivingModel = new M_processedfabricreceiving();
         $item_id = $this->input->post('ItemCode');
@@ -278,10 +296,25 @@ class Processedfabricreceiving extends CI_Controller {
                 'Quantity' => ($pieces[$count] * +1),
                 'processed_fabric_receiving_detail_id' => $pfrId,
                 'ModifiedDate' => $myModel->getFieldsValue()['ModifiedDate'],
-                'user_id' => 0
+                'user_id' => $userId
             );
             $processedFabricReceivingModel->updateItemStock($processedFabricReceivingData);
         }
+    }
+
+    function updateMainStock($userId, $totalPieces) {
+        $myModel = new My_Model();
+        $pfrNo = 'PFR-' . $this->input->post('PFRNo');
+        $processedFabricReceivingModel = new M_processedfabricreceiving();
+        $processedFabricReceivingData = array(
+            'item_id' => $this->input->post('ItemCode'),
+            'TransactionDate' => date("Y-m-d", strtotime($this->input->post('ReceivingDate'))),
+            'TransactionType' => "IN",
+            'ItemQuantity' => $totalPieces,
+            'ModifiedDate' => $myModel->getFieldsValue()['ModifiedDate'],
+            'user_id' => $userId
+        );
+        $processedFabricReceivingModel->updateMainStock($processedFabricReceivingData, $pfrNo);
     }
 
     function Delete($yarnDeliveryID) {
