@@ -458,6 +458,7 @@ include 'include/leftmenu.php';
 //            disableElements("#DeliveryReceivedBy");
 //            disableElements("#VehicleNo");                      
         }
-    
+    }
+        
 
 </script>
