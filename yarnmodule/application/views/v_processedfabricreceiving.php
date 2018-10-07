@@ -220,16 +220,13 @@ include 'include/leftmenu.php';
         // On Pressing Enter, Preventing Default Functionality
         onPressEnter('#processedReceivingForm');
         onPressEnter('#processedReceivingFormEdit');
-
     });
-
     var pfrCount = 0;
     var selectedCount = "";
     var selectedMill = "";
     var selectedWarehouse = "";
     var brandValue = "";
     var stockElement;
-
     function populateGridRows() {
         var deliverItemsCount = 0;
         var countRows = $("#receivingItemsGrid> tbody").children().length;
@@ -351,7 +348,7 @@ include 'include/leftmenu.php';
                         "<td><?= $key['DriverName'] ?></td>" +
                         "<td><?= $key['ChallanNo'] ?></td>" +
                         "<td><?= $key['ReceivedBy'] ?></td>" +
-                        "<td><a data-dismiss='modal' style='cursor: pointer;' onclick =ediForm('<?= $key['processed_fabric_receiving_id'] ?>','<?= rawurlencode($key['ProcessedFabricReceivingNo']) ?>','<?= rawurlencode($key['ReceivingDate']) ?>','<?= rawurlencode($key['CompanyName']) ?>','<?= rawurlencode($key['ChallanNo']) ?>','<?= rawurlencode($key['TotalPieces']) ?>','<?= rawurlencode($key['TotalPieces']) ?>','<?= rawurlencode($key['TotalRolls']) ?>','<?= rawurlencode($key['TotalPieces']) ?>','<?= rawurlencode($key['ReceivedBy']) ?>','<?= rawurlencode($key['TotalPieces']) ?>','<?= rawurlencode($key['VehicleNo']) ?>','<?= $key['TotalPieces'] ?>','<?= $key['TotalPieces'] ?>','None')>Edit</a>" +
+                        "<td><a data-dismiss='modal' style='cursor: pointer;' onclick =ediForm('<?= $key['processed_fabric_receiving_id'] ?>','<?= rawurlencode($key['ProcessedFabricReceivingNo']) ?>','<?= rawurlencode($key['CompanyName']) ?>','<?= rawurlencode($key['ReceivingDate']) ?>','<?= rawurlencode($key['ChallanNo']) ?>','<?= rawurlencode($key['DriverName']) ?>','<?= rawurlencode($key['VehicleNo']) ?>','<?= rawurlencode($key['ReceiveBy']) ?>','None')>Edit</a>" +
                         "<span> | </span>" +
                         "<a style='cursor: pointer;' href='<?= base_url() ?>index.php/processedfabricreceiving/Delete/<?= $key['processed_fabric_receiving_id'] ?>'>Delete</a>" +
                         "</td>" +
@@ -385,17 +382,17 @@ include 'include/leftmenu.php';
             "margin-left": '-180px'
     });
     }
-    
-    function ediForm(greighFabricReceivingID, greighFabricReceivingNo, date, partyName, challanNo, itemCode, totalPieces, totalWeight, totalRolls, warehouse, avgLbsPerDozen, gramPerPiece, heavyLightPercent, receivedBy, issueToProcessor, processorName, issueBy, deliveryReceivedBy, vehicleNo, greighFabricDeliveryID, type) {
-        if (type === 'editmenu') {
-            formMode = "Edit";
-            var action = "<?php echo base_url() ?>index.php/greighfabricreceiving/Update";
-            enableElements("#GreighFabricReceivingNo");
-            enableElements("#GreighFabricDated");            
-            enableElements("#PartyName");
+
+    function ediForm_Old(processedFabricReceivingId, processedFabricReceivingNo, CompanyName, ReceivingDate, ChallanNo, DriverName, VehicleNo, ReceiverName, type) {
+    if (type === 'editmenu') {
+    formMode = "Edit";
+            var action = "<?php echo base_url() ?>index.php/processedfabricreceiving/Update";
+            enableElements("#PFRNo");
+            enableElements("#ReceivingDate");
+            enableElements("#ProcessorName");
             enableElements("#ChallanNo");
-            enableElements("#ItemCode");
-            enableElements("#TotalPieces");
+            enableElements("#VehicleNo");
+            enableElements("#ReceivedBy");
             enableElements("#TotalWeight");
             enableElements("#TotalRolls");
             enableElements("#warehouse");
@@ -405,11 +402,11 @@ include 'include/leftmenu.php';
 //            enableElements("#IssueBy");
 //            enableElements("#DeliveryReceivedBy");
 //            enableElements("#VehicleNo");
-            document.getElementById("greighFabricReceivingForm").action = action;            
-        }
-        else
-        {
-            resetForm();
+            document.getElementById("greighFabricReceivingForm").action = action;
+    }
+    else
+    {
+    resetForm();
             $("#greigh_fabric_receiving_id").val(greighFabricReceivingID);
             $("#GreighFabricReceivingNo").val(decodeURI(greighFabricReceivingNo));
             $("#ChallanNo").val(decodeURI(challanNo));
@@ -422,22 +419,22 @@ include 'include/leftmenu.php';
             $("#HeavyLight").val(decodeURI(heavyLightPercent));
             $("#ReceivedBy").val(decodeURI(receivedBy));
             //$("#confirmDelivery").val(decodeURI(issueToProcessor));
-            $('#confirmDelivery option').filter(function() {
-                return ($(this).val() === decodeURI(issueToProcessor));
-            }).prop('selected', true);
+            $('#ProcessorName option').filter(function() {
+    return ($(this).val() === decodeURI(CompanyName));
+    }).prop('selected', true);
             $('#PartyName option').filter(function() {
-                return ($(this).text() === decodeURI(partyName));
-            }).prop('selected', true);
+    return ($(this).text() === decodeURI(partyName));
+    }).prop('selected', true);
             $('#ItemCode option').filter(function() {
-                return ($(this).text() === decodeURI(itemCode));
-            }).prop('selected', true);
+    return ($(this).text() === decodeURI(itemCode));
+    }).prop('selected', true);
             $('#warehouse option').filter(function() {
-                return ($(this).text() === decodeURI(warehouse));
-            }).prop('selected', true);
+    return ($(this).text() === decodeURI(warehouse));
+    }).prop('selected', true);
             populateItemInfo();
             disableElements("#GreighFabricReceivingNo");
             disableElements("#ChallanNo");
-            disableElements("#GreighFabricDated");            
+            disableElements("#GreighFabricDated");
             disableElements("#PartyName");
             disableElements("#ItemCode");
             disableElements("#TotalPieces");
@@ -457,8 +454,84 @@ include 'include/leftmenu.php';
 //            disableElements("#IssueBy");
 //            disableElements("#DeliveryReceivedBy");
 //            disableElements("#VehicleNo");                      
-        }
     }
-        
+    }
+
+    function ediForm(detailData, type) {
+    if (type === 'editmenu') {
+    formMode = "Edit";
+            var action = "<?php echo base_url() ?>index.php/processedfabricreceiving/Update";
+            enableElements("#ProcessorName");
+            enableElements("#ReceivingDate");
+            enableElements("#ChallanNo");
+            enableElements("#DriverName");
+            enableElements("#VehicleNo");
+            enableElements("#ReceivedBy");
+            enableElements("#receivingItemsGrid *");
+            enableElements("#OKButton");
+            enableElements("#SaveProcessedFabricReceivingButton");
+            var countRows = $("#receivingItemsGrid> tbody").children().length;
+            if (countRows > 0) {
+    enableElements('#SaveProcessedFabricReceivingButton');
+    }
+    document.getElementById("ProcessedFabricReceivingForm").action = action;
+    }
+    else {
+    var parsedData = JSON.parse(decodeURI(detailData));
+            if (parsedData.length > 0) {
+    $("#ProcessedFabricReceivingId").val(parsedData[0]['processed_fabric_receiving_id']);
+            $("#PFRNo").val(parsedData[0]['PFRNo']);
+            $("#ReceivingDate").val(getFormatedDate(parsedData[0]['ReceivingDate']));
+            $("#ChallanNo").val(parsedData[0]['ChallanNo']);
+            $("#DriverName").val(parsedData[0]['DriverName']);
+            $("#VehicleNo").val(parsedData[0]['VehicleNo']);
+            $("#ReceivedBy").val(parsedData[0]['ReceivedBy']);
+            $('#ProcessorName option').filter(function() {
+    return ($(this).text() === parsedData[0]['CompanyName']);
+    }).prop('selected', true);
+            $.each(parsedData, function(i, val) {
+            items += "<tr>" +
+                    "<td tag=''><input id='SerialNoDetail' name='SerialNoDetail[]' value='" + val.SerialNo + "' type = 'text' class='form-control dcSno' style = 'width: 55px;' placeholder = 'SNo' readonly></td>" +
+                    "<td tag=''><select id='PONumber' name='PONumber[]' class='form-control' style='width:200px;'><option value='0'>Select PO Number</option><?php foreach ($customerOrders as $key) { ?><option value='<?= $key['customer_order_id'] ?>'><?= $key['PremierPO'] ?></option><?php } ?></select><div class='form-group has-error form-error error-PONumber' style='width:0px;margin-left:0px;display:none;'><label class='control-label' for='inputError'>Select PO Number!</label></div></td>" +
+                    "<td tag=''><select id='ItemCode' name='ItemCode[]' class='form-control' style='width:200px' onchange=''><option value='0'>Select Item Code</option><?php foreach ($itemList as $key) { ?><option value='<?= $key['item_id'] ?>'><?= $key['ItemCode'] ?></option><?php } ?></select><div class='pull-left col-xs-12 col-sm-6 col-md-6 form-group has-error form-error error-ItemCode' style='width:0px;margin-left:0px;display:none;'></div></td>" +
+                    "<td tag=''><input id='Description' name='Description[]' value='<?php
+                                                        if ($description) {
+                                                            echo $description;
+                                                        }
+                                                        ?>' type='text' step='any' class='form-control' style='width:75px'><div class='form-group has-error form-error error-Rolls' style='width:0px;margin-left:0px;display:none;'><label class='control-label' for='inputError'>Enter Description!</label></div></td>" +
+                    "<td tag=''><input id='Color' name='Color[]' value='<?php
+                                                        if ($color) {
+                                                            echo $color;
+                                                        }
+                                                        ?>' type='text' step='any' class='form-control' style='width:75px'><div class = 'form-group has-error form-error error-Rolls' style = 'width:0px;margin-left:0px;display:none;'>< label class = 'control-label' for = 'inputError' > Enter Color! < /label></div></td >" +
+                    "<td tag=''><input id='Rolls' name='Rolls[]' value='<?php
+                                                        if ($rolls) {
+                                                            echo $rolls;
+                                                        }
+                                                        ?>' type='number' step='any' min='0' class='form-control' style='width:75px'><div class='form-group has-error form-error error-Rolls' style='width:0px;margin-left:0px;display:none;'><label class='control-label' for='inputError'>Enter Rolls!</label></div></tag>"
+                    "<td tag=''><input id='Pieces' name='Pieces[]' value='<?php
+                                                        if ($pieces) {
+                                                            echo $pieces;
+                                                        }
+                                                        ?>' type='number' step='any' min='0' class='form-control' style='width:75px'>< div class = 'form-group has-error form-error error-Pieces' style = 'width:0px;margin-left:0px;display:none;'></div></td > " +
+                    "<td tag=''><select id='warehouse' name='warehouse[]' class='form-control' style='width:200px;'><option value='0'>Select Warehouse</option><?php foreach ($warehouseCombo as $key) { ?> < option value = '<?= $key['Warehouse_id'] ?>' ><?= $key['WarehouseName'] ?> < /option><?php } ?></select ><div class = 'form-group has-error form-error error-warehouse' style = 'width:0px;margin-left:0px;display:none;'><label class = 'control-label' for = 'inputError'>Select Warehouse!</label></div></td > " +
+                    "<td><input id='AddButton' name='AddButton' class='btn btn-primary' style='width:35px;height:30px;text-align:center;float: right; cursor: pointer' value='+' onclick='populateGridRows()' readonly></td>" +
+                    "<td tag=''><input id='DelButton' name='DelButton' class='btn btn-primary' style='width:35px;height:30px;text-align:center;float: right; cursor: pointer' value='X' onclick='deleteGridRows(this)' readonly></td></tr>";
+                    $("#receivingItemsTbody").html(items);
+            });
+    }
+    disableElements("#ProcessorName");
+            disableElements("#ReceivingDate");
+            disableElements("#ChallanNo");
+            disableElements("#DriverName");
+            disableElements("#VehicleNo");
+            disableElements("#ReceivedBy");
+            disableElements("#receivingItemsGrid *");
+            disableElements("#OKButton");
+            disableElements("#SaveProcessedFabricReceivingButton");
+            resetSNO();
+    }
+    }
+
 
 </script>
