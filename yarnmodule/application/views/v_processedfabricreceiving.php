@@ -348,7 +348,7 @@ include 'include/leftmenu.php';
                         "<td><?= $key['DriverName'] ?></td>" +
                         "<td><?= $key['ChallanNo'] ?></td>" +
                         "<td><?= $key['ReceivedBy'] ?></td>" +
-                        "<td><a data-dismiss='modal' style='cursor: pointer;' onclick =ediForm('<?= $key['processed_fabric_receiving_id'] ?>','<?= rawurlencode($key['ProcessedFabricReceivingNo']) ?>','<?= rawurlencode($key['CompanyName']) ?>','<?= rawurlencode($key['ReceivingDate']) ?>','<?= rawurlencode($key['ChallanNo']) ?>','<?= rawurlencode($key['DriverName']) ?>','<?= rawurlencode($key['VehicleNo']) ?>','<?= rawurlencode($key['ReceivedBy']) ?>','<?= $key['premier_po'] ?>','<?= $key['item_code'] ?>','Description','<?= $key['colors']?>','<?= $key['rolls'] ?>','<?= $key['pieces'] ?>','<?= $key['warehouse']?>','None')>Edit</a>" +
+                        "<td><a data-dismiss='modal' style='cursor: pointer;' onclick =ediForm('<?= $key['processed_fabric_receiving_id'] ?>','<?= rawurlencode($key['ProcessedFabricReceivingNo']) ?>','<?= rawurlencode($key['CompanyName']) ?>','<?= rawurlencode($key['ReceivingDate']) ?>','<?= rawurlencode($key['ChallanNo']) ?>','<?= rawurlencode($key['DriverName']) ?>','<?= rawurlencode($key['VehicleNo']) ?>','<?= rawurlencode($key['ReceivedBy']) ?>','<?= $key['premier_po'] ?>','<?= $key['item_code'] ?>','Description','<?= $key['colors'] ?>','<?= $key['rolls'] ?>','<?= $key['pieces'] ?>','<?= $key['warehouseId'] ?>','None')>Edit</a>" +
                         "<span> | </span>" +
                         "<a style='cursor: pointer;' href='<?= base_url() ?>index.php/processedfabricreceiving/Delete/<?= $key['processed_fabric_receiving_id'] ?>'>Delete</a>" +
                         "</td>" +
@@ -398,22 +398,28 @@ include 'include/leftmenu.php';
             enableElements("#SaveProcessedFabricReceivingButton");
             var countRows = $("#receivingItemsGrid> tbody").children().length;
             if (countRows > 0) {
-                enableElements('#SaveProcessedFabricReceivingButton');
-                }
+    enableElements('#SaveProcessedFabricReceivingButton');
+    }
 
-            console.log("action");
+    console.log("action");
             console.log(action);
             document.getElementById("processedReceivingForm").action = action;
     }
     else {
-        console.log(decodeURI(ItemCode));
-    var parsedData = ItemCode.split(',');
-    //var parsedData = decodeURI(ItemCode).split(',');
-            console.log("11parsedData");
-            console.log(ItemCode);
-            console.log(parsedData.length);
-         if (parsedData.length > 0) {
-            $("#ProcessedFabricReceivingId").val(processedFabricReceivingId);
+    console.log(decodeURI(ItemCode));
+            var parsedData = ItemCode.split(',');
+            var splitWarehouse = Warehouse.split(',');
+            var splitPremierPo = PremierPO.split(',');
+            var splitDescription = Description.split(',');
+            var splitColors = Colors.split(',');
+            var splitRolls = Rolls.split(',');
+            var splitPieces = Pieces.split(',');
+            
+            console.log("splitWarehouse");
+            console.log(splitWarehouse);
+            
+            if (parsedData.length > 0) {
+    $("#ProcessedFabricReceivingId").val(processedFabricReceivingId);
             $("#PFRNo").val(processedFabricReceivingNo);
             $("#ReceivingDate").val(getFormatedDate(ReceivingDate));
             $("#ChallanNo").val(decodeURI(ChallanNo));
@@ -421,29 +427,19 @@ include 'include/leftmenu.php';
             $("#VehicleNo").val(decodeURI(VehicleNo));
             $("#ReceivedBy").val(decodeURI(ReceivedBy));
             $('#ProcessorName option').filter(function () {
-            return ($(this).text() === decodeURI(CompanyName));
-                }).prop('selected', true);
+    return ($(this).text() === decodeURI(CompanyName));
+    }).prop('selected', true);
             var items = [];
-            
-        $.each(parsedData, function (i, val) {
-            console.log('a');
-                    items += "<tr>" +
+            $.each(parsedData, function (i, val) {
+            items += "<tr>" +
                     "<td tag=''><input id='SerialNoDetail' name='SerialNoDetail[]' value='" + (i + 1) + "' type = 'text' class='form-control dcSno' style = 'width: 55px;' placeholder = 'SNo' readonly></td>" +
-                    "<td tag=''><select id='PONumber' name='PONumber[]' class='form-control' style='width:200px;'><option value='0'>Select PO Number</option><?php foreach ($customerOrders as $key) { ?><option value='<?= $key['customer_order_id'] ?>'><?= $key['PremierPO'] ?></option><?php } ?></select><div class='form-group has-error form-error error-PONumber' style='width:0px;margin-left:0px;display:none;'><label class='control-label' for='inputError'>Select PO Number!</label></div></td>" +
-                    "<td tag=''><select id='ItemCode' name='ItemCode[]' class='form-control' style='width:200px' onchange=''><option value='0'>Select Item Code</option><?php foreach ($itemList as $key) { ?><option value='<?= $key['item_id'] ?>'><?= $key['ItemCode'] ?></option><?php } ?></select><div class='pull-left col-xs-12 col-sm-6 col-md-6 form-group has-error form-error error-ItemCode' style='width:0px;margin-left:0px;display:none;'></div></td>" +
-                    "<td tag=''><input id='Description' name='Description[]' value='<?php if ($description) {
-                                                            echo $description;
-                                                        } ?>' type='text' step='any' class='form-control' style='width:75px'><div class='form-group has-error form-error error-Rolls' style='width:0px;margin-left:0px;display:none;'><label class='control-label' for='inputError'>Enter Description!</label></div></td>" +
-                    "<td tag=''><input id='Color' name='Color[]' value='<?php if ($color) {
-                                                            echo $color;
-                                                        } ?>' type='text' step='any' class='form-control' style='width:75px'><div class = 'form-group has-error form-error error-Rolls' style = 'width:0px;margin-left:0px;display:none;'><label class = 'control-label' for = 'inputError' > Enter Color! < /label></div></td>" +
-                    "<td tag=''><input id='Rolls' name='Rolls[]' value='<?php if ($rolls) {
-                                                            echo $rolls;
-                                                        } ?>' type='number' step='any' min='0' class='form-control' style='width:75px'><div class='form-group has-error form-error error-Rolls' style='width:0px;margin-left:0px;display:none;'><label class='control-label' for='inputError'>Enter Rolls!</label></div></td>" +
-                    "<td tag=''><input id='Pieces' name='Pieces[]' value='<?php if ($pieces) {
-                                                            echo $pieces;
-                                                        } ?>' type='number' step='any' min='0' class='form-control' style='width:75px'><div class='form-group has-error form-error error-Pieces' style = 'width:0px;margin-left:0px;display:none;'><label class='control-label' for='inputError'>Enter Rolls!</label></div></td>" +
-                    "<td tag=''><select id='warehouse' name='warehouse[]' class='form-control' style='width:200px;'><option value='0'>Select Warehouse</option><?php foreach ($warehouseCombo as $key) { ?> <option value = '<?= $key['Warehouse_id'] ?>'><?= $key['WarehouseName'] ?> </option><?php } ?></select><div class = 'form-group has-error form-error error-warehouse' style = 'width:0px;margin-left:0px;display:none;'><label class = 'control-label' for = 'inputError'>Select Warehouse!</label></div></td>" +
+                    "<td tag=''><select id='PONumber' name='PONumber[]' class='form-control' style='width:200px;'><option value='0'>Select PO Number</option><?php foreach ($customerOrders as $key) { ?><option " + (splitPremierPo[i] === '<?= $key['PremierPO'] ?>' ? "selected" : "") + " value='<?= $key['customer_order_id'] ?>'><?= $key['PremierPO'] ?></option><?php } ?></select><div class='form-group has-error form-error error-PONumber' style='width:0px;margin-left:0px;display:none;'><label class='control-label' for='inputError'>Select PO Number!</label></div></td>" +
+                    "<td tag=''><select id='ItemCode' name='ItemCode[]' class='form-control' style='width:200px' onchange=''><option value='0'>Select Item Code</option><?php foreach ($itemList as $key) { ?><option " + (parsedData[i] === '<?= $key['ItemCode'] ?>' ? "selected" : "") + " value = '<?= $key['item_id'] ?>'><?= $key['ItemCode'] ?></option><?php } ?></select><div class = 'pull-left col-xs-12 col-sm-6 col-md-6 form-group has-error form-error error-ItemCode' style = 'width:0px;margin-left:0px;display:none;'></div></td> " +
+                    "<td tag=''><input id='Description' name='Description[]' value=" + splitDescription[i] + " type='text' step='any' class='form-control' style='width:75px'><div class='form-group has-error form-error error-Rolls' style='width:0px;margin-left:0px;display:none;'><label class='control-label' for='inputError'>Enter Description!</label></div></td>" +
+                    "<td tag=''><input id='Color' name='Color[]' value=" + splitColors[i] + " type='text' step='any' class='form-control' style='width:75px'><div class = 'form-group has-error form-error error-Rolls' style = 'width:0px;margin-left:0px;display:none;'><label class = 'control-label' for = 'inputError' > Enter Color! < /label></div></td>" +
+                    "<td tag=''><input id='Rolls' name='Rolls[]' value=" + splitRolls[i] + "  type='number' step='any' min='0' class='form-control' style='width:75px'><div class='form-group has-error form-error error-Rolls' style='width:0px;margin-left:0px;display:none;'><label class='control-label' for='inputError'>Enter Rolls!</label></div></td>" +
+                    "<td tag=''><input id='Pieces' name='Pieces[]' value=" + splitPieces[i] + " type='number' step='any' min='0' class='form-control' style='width:75px'><div class='form-group has-error form-error error-Pieces' style = 'width:0px;margin-left:0px;display:none;'><label class='control-label' for='inputError'>Enter Rolls!</label></div></td>" +
+                    "<td tag=''><select id='warehouse' name='warehouse[]' class='form-control' style='width:200px;'><option value='0'>Select Warehouse</option><?php foreach ($warehouseCombo as $key) { ?> <option " + (splitWarehouse[i] === '<?= $key['Warehouse_id'] ?>' ? "selected" : "") + " value= '<?= $key['Warehouse_id'] ?>'><?= $key['WarehouseName'] ?> </option><?php } ?></select><div class = 'form-group has-error form-error error-warehouse' style = 'width:0px;margin-left:0px;display:none;'> <label class = 'control-label' for='inputError'>Select Warehouse!</label></div></td>" +
                     "<td><input id='AddButton' name='AddButton' class='btn btn-primary' style='width:35px;height:30px;text-align:center;float: right; cursor: pointer' value='+' onclick='populateGridRows()' readonly></td>" +
                     "<td tag=''><input id='DelButton' name='DelButton' class='btn btn-primary' style='width:35px;height:30px;text-align:center;float: right; cursor: pointer' value='X' onclick='deleteGridRows(this)' readonly></td></tr>";
                     $("#receivingItemsTbody").html(items);
