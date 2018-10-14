@@ -414,10 +414,8 @@ include 'include/leftmenu.php';
             var splitColors = Colors.split(',');
             var splitRolls = Rolls.split(',');
             var splitPieces = Pieces.split(',');
-            
             console.log("splitWarehouse");
             console.log(splitWarehouse);
-            
             if (parsedData.length > 0) {
     $("#processed_fabric_receiving_id").val(processedFabricReceivingId);
             $("#PFRNo").val(processedFabricReceivingNo);
@@ -472,6 +470,58 @@ include 'include/leftmenu.php';
     var formatedDate = Day + "-" + Month + "-" + Year;
             return formatedDate;
     }
+
+    function search() {
+    var searchValue = $('#searchProcessedFabricReceiving').val();
+            if (searchValue === "") {
+    bootbox.alert("Please enter value to search for", function(result) {
+    });
+    }
+    else{
+    $.ajax({
+    url: "<?= base_url() ?>index.php/processedfabricreceiving/search",
+            type: "POST",
+            data: {search: searchValue},
+            success: function(data) {
+            if (data !== "null")
+            {
+            var parsedData = JSON.parse(data);
+                    if (parsedData.length > 0) {
+
+            console.log("parsedData");
+                    console.log(parsedData[0].warehouseId);
+                    var items = [];
+                    var counter = 0;
+                    $.each(parsedData, function(i, val) {
+                    counter = parseInt(counter) + 1;
+                            items += "<tr>" +
+                            "<td>" + val.ProcessedFabricReceivingNo + "</td>" +
+                            "<td>" + val.ReceivingDate + "</td>" +
+                            "<td>" + val.CompanyName + "</td>" +
+                            "<td>" + fractionNotation(val.TotalPieces, 2) + "</td>" +
+                            "<td>" + fractionNotation(val.TotalRolls, 2) + "</td>" +
+                            "<td>" + val.DriverName + "</td>" +
+                            "<td>" + val.VehicleNo + "</td>" +
+                            "<td>" + val.ChallanNo + "</td>" +
+                            "<td>" + val.ReceivedBy + "</td>" +
+                            "<td><a data-dismiss='modal' style='cursor: pointer;' onclick =ediForm('" + val.processed_fabric_receiving_id + "','" + val.ProcessedFabricReceivingNo + "','" + encodeURI(val.CompanyName) + "','" + val.ReceivingDate + "','" + encodeURI(val.ChallanNo) + "','" + encodeURI(val.DriverName) + "','" + encodeURI(val.VehicleNo) + "','" + encodeURI(val.ReceivedBy) + "','" + val.premier_po + "','" + val.item_code + "','Description','" + encodeURI(val.colors) + "','" + val.rolls + "','" + val.pieces + "','" + val.warehouseId + "','None')>Edit</a>" +
+                            "<span> | </span>" +
+                            "<a style='cursor: pointer;' href='<?= base_url() ?>index.php/processedfabricreceiving/Delete/'" + val.processed_fabric_receiving_id + "'>Delete</a>" +
+                            "</td>" +
+                            "</tr>";
+                    });
+                    $("#GreighFabricDeliveryTbody").html(items);
+            }
+
+            }
+
+            }
+    });
+    }
+    }
+
+
+    // $("#yarnDeliveryTbodyDetail").html("<tr><td></td><td></td><td></td><td></td><td>No Data Found</td><td></td><td></td><td></td></tr>");
 
 
 </script>

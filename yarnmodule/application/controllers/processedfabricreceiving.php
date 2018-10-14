@@ -341,11 +341,11 @@ class Processedfabricreceiving extends CI_Controller {
     }
 
     function search() {
-        $yarnDeliveryModel = new M_yarndelivery();
+        $processedFabricReceivingModel = new M_processedfabricreceiving();
         $search = $this->input->post('search');
-        $yarnGrnSearch = $yarnDeliveryModel->searchYarnDelivery($search);
-        $yarnDeliveryData = json_encode($yarnGrnSearch);
-        echo $yarnDeliveryData;
+        $processedFabricReceivingSearch = $processedFabricReceivingModel->searchProcessedFabricReceiving($search);
+        $processedFabricReceivingData = json_encode($processedFabricReceivingSearch);
+        echo $processedFabricReceivingData;
     }
 
     function reloadCombo() {
