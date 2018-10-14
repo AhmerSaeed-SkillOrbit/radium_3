@@ -104,6 +104,7 @@ class M_processedfabricreceiving extends My_Model {
 
     function updateItemledger($itemLedgerData, $pfrId) {
         $myModel = new My_Model();
+        
         $update = $myModel->Update('item_ledger', $itemLedgerData, 'processed_fabric_receiving_id', $pfrId);
         return $update;
     }

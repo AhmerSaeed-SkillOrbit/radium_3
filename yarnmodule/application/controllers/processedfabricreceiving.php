@@ -244,9 +244,8 @@ class Processedfabricreceiving extends CI_Controller {
             }
             $updateDetailData = $processedFabricReceivingModel->UpdateProcessedFabricReceivingDetail($pfrId, $processedFabricReceivingDetailData);
             if ($updateDetailData) {
-                $pfrID = $updateDetailData;
-                $this->updateItemLedger($pfrID, 0);
-                $this->updateItemStock($pfrID, 0);
+                $this->updateItemLedger($pfrId, 0);
+                $this->updateItemStock($pfrId, 0);
                 $this->updateMainStock(0);
             }
 
@@ -259,7 +258,7 @@ class Processedfabricreceiving extends CI_Controller {
         redirect(base_url() . "index.php/processedfabricreceiving/index");
     }
 
-    function updateItemLedger($pfrID, $userId) {
+    function updateItemLedger($pfrId, $userId) {
         $myModel = new My_Model();
         $processedFabricReceivingModel = new M_processedfabricreceiving();
         $item_id = $this->input->post('ItemCode');
@@ -272,7 +271,12 @@ class Processedfabricreceiving extends CI_Controller {
                 'ModifiedDate' => $myModel->getFieldsValue()['ModifiedDate'],
                 'user_id' => $userId
             );
-            $processedFabricReceivingModel->updateItemledger($processedFabricReceivingData, $pfrID);
+            $processedFabricReceivingModel->updateItemledger($processedFabricReceivingData, $pfrId);
+
+//            echo "<pre>";
+//            print_r($processedFabricReceivingData);
+//            echo $pfrId;
+//            echo "</pre>";
         }
     }
 
@@ -292,6 +296,10 @@ class Processedfabricreceiving extends CI_Controller {
                 'user_id' => $userId
             );
             $processedFabricReceivingModel->updateItemStock($processedFabricReceivingData, $pfrId);
+//            echo "<pre>";
+//            print_r($processedFabricReceivingData);
+//            echo $pfrId;
+//            echo "</pre>";
         }
     }
 
@@ -309,6 +317,10 @@ class Processedfabricreceiving extends CI_Controller {
                 'user_id' => $userId
             );
             $processedFabricReceivingModel->updateMainStock($processedFabricReceivingData, $pfrNo);
+//            echo "<pre>";
+//            print_r($processedFabricReceivingData);
+//            echo $pfrNo;
+//            echo "</pre>";
         }
     }
 
