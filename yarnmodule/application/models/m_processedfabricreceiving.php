@@ -116,7 +116,7 @@ class M_processedfabricreceiving extends My_Model {
 
     function updateItemStock($itemStockData, $pfrId) {
         $myModel = new My_Model();
-        $update = $myModel->Update('item_stock', $itemStockData, 'processed_fabric_receiving_detail_id', $$pfrId);
+        $update = $myModel->Update('item_stock', $itemStockData, 'processed_fabric_receiving_detail_id', $pfrId);
         return $update;
     }
 

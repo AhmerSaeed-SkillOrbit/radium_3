@@ -163,7 +163,7 @@ class Processedfabricreceiving extends CI_Controller {
                 'warehouse_id' => $warehouse_id[$count],
                 'TransactionDate' => date("Y-m-d", strtotime($_POST['ReceivingDate'])),
                 'TransactionType' => "IN",
-                'Quantity' => ($pieces[$count] + 1),
+                'Quantity' => $pieces[$count],
                 'processed_fabric_receiving_detail_id' => $pfrId,
                 'CreatedDate' => $myModel->getFieldsValue()['CreatedDate'],
                 'ModifiedDate' => $myModel->getFieldsValue()['ModifiedDate'],
@@ -184,7 +184,7 @@ class Processedfabricreceiving extends CI_Controller {
                 'TransactionDate' => date("Y-m-d", strtotime($this->input->post('ReceivingDate'))),
                 'TransactionType' => "IN",
                 'TransactionReferenceNo' => 'PFR-' . $this->input->post('PFRNo'),
-                'ItemQuantity' => ($pieces[$count] + 1),
+                'ItemQuantity' => $pieces[$count],
                 'CreatedDate' => $myModel->getFieldsValue()['CreatedDate'],
                 'ModifiedDate' => $myModel->getFieldsValue()['ModifiedDate'],
                 'user_id' => $userId
@@ -194,7 +194,6 @@ class Processedfabricreceiving extends CI_Controller {
     }
 
     function Update() {
-
         $processedFabricReceivingModel = new M_processedfabricreceiving();
         $myModel = new My_Model();
 
@@ -246,23 +245,17 @@ class Processedfabricreceiving extends CI_Controller {
             $updateDetailData = $processedFabricReceivingModel->UpdateProcessedFabricReceivingDetail($pfrId, $processedFabricReceivingDetailData);
             if ($updateDetailData) {
                 $pfrID = $updateDetailData;
-                $this->updateItemLedger($pfrID);
+                $this->updateItemLedger($pfrID, 0);
                 $this->updateItemStock($pfrID, 0);
                 $this->updateMainStock(0);
             }
-            $this->session->set_flashdata('updatemessage', $processedFabricReceivingData);
-            redirect(base_url() . "index.php/processedfabricreceiving/index");
-        } else {
-            $this->session->set_flashdata('updatemessage', FALSE);
-            redirect(base_url() . "index.php/processedfabricreceiving/index");
-        }
-//        $updateStock = $yarnDeliveryModel->UpdateStock($yarnDeliveryNo);
-//        $updateLedger = $yarnDeliveryModel->UpdateYarnledger($yarnDeliveryNo);
-//        if ($purposeID == 1) {
-//            $updateWeaverLedger = $yarnDeliveryModel->UpdateWeavingLegder($yarnDeliveryNo);
-//        }
 
-        $this->session->set_flashdata('updatemessage', $processedFabricReceivingData);
+            $updateMessage = "Successfully Updated";
+            $this->session->set_flashdata('updatemessage', $updateMessage);
+        } else {
+            $updateMessage = "Failed to Update";
+            $this->session->set_flashdata('updatemessage', FALSE);
+        }
         redirect(base_url() . "index.php/processedfabricreceiving/index");
     }
 
@@ -274,7 +267,6 @@ class Processedfabricreceiving extends CI_Controller {
 
         for ($count = 0; $count < count($item_id); $count++) {
             $processedFabricReceivingData = array(
-                //'party_id' => $this->input->post('postProcessorName'),
                 'item_id' => $item_id[$count],
                 'ItemReceived' => $pieces[$count],
                 'ModifiedDate' => $myModel->getFieldsValue()['ModifiedDate'],
@@ -295,7 +287,7 @@ class Processedfabricreceiving extends CI_Controller {
             $processedFabricReceivingData = array(
                 'item_id' => $item_id[$count],
                 'warehouse_id' => $warehouse_id[$count],
-                'Quantity' => ($pieces[$count] + 1),
+                'Quantity' => $pieces[$count],
                 'ModifiedDate' => $myModel->getFieldsValue()['ModifiedDate'],
                 'user_id' => $userId
             );
@@ -312,11 +304,11 @@ class Processedfabricreceiving extends CI_Controller {
         for ($count = 0; $count < count($item_id); $count++) {
             $processedFabricReceivingData = array(
                 'TransactionDate' => date("Y-m-d", strtotime($this->input->post('ReceivingDate'))),
-                'ItemQuantity' => ($pieces[$count] + 1),
+                'ItemQuantity' => $pieces[$count],
                 'ModifiedDate' => $myModel->getFieldsValue()['ModifiedDate'],
                 'user_id' => $userId
             );
-            $processedFabricReceivingModel->updateMainStock($processedFabricReceivingData,$pfrNo);
+            $processedFabricReceivingModel->updateMainStock($processedFabricReceivingData, $pfrNo);
         }
     }
 

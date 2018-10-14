@@ -419,7 +419,7 @@ include 'include/leftmenu.php';
             console.log(splitWarehouse);
             
             if (parsedData.length > 0) {
-    $("#ProcessedFabricReceivingId").val(processedFabricReceivingId);
+    $("#processed_fabric_receiving_id").val(processedFabricReceivingId);
             $("#PFRNo").val(processedFabricReceivingNo);
             $("#ReceivingDate").val(getFormatedDate(ReceivingDate));
             $("#ChallanNo").val(decodeURI(ChallanNo));
