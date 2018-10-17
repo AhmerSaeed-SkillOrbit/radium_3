@@ -22,10 +22,10 @@ include 'include/leftmenu.php';
                 <a class="btn btn-app" onclick="resetForm()">
                     <i class="fa fa-repeat"></i> Reset
                 </a>
-                <a id="PrintAnchor" class="btn btn-app" onclick="printYarnDelivery($('#DeliveryChalanNumber').val())">
+                <a id="PrintAnchor" class="btn btn-app" onclick="printYarnDelivery($('#DeliveryChalanNumber').val())" style="display: none;">
                     <i class="fa fa-print"></i> Print
                 </a>
-                <a id="CSVAnchor" class="btn btn-app" onclick="downloadCSV($('#DeliveryChalanNumber').val())">
+                <a id="CSVAnchor" class="btn btn-app" onclick="downloadCSV($('#DeliveryChalanNumber').val())" style="display: none;">
                     <i class="fa fa-download"></i> Download CSV
                 </a>
             </div>
@@ -519,9 +519,42 @@ include 'include/leftmenu.php';
     });
     }
     }
+    
+        function reloadForm() {
+        if (formMode === 'Edit') {
+            bootbox.confirm("Do you want to reload the page press OK", function(result) {
+                if (result) {
+                    window.location.reload();
+                }
+            });
+        } else {
+            window.location.reload();
+        }
+    }
+    
+     function resetForm() {
+        if (formMode === 'Retrieve' || formMode === 'Edit') {
+            return true;
+        } else {
+            emptyAllFields("#ProcessorName");
+            emptyAllFields("#ReceivingDate");
+            emptyAllFields("#ChallanNo");
+            emptyAllFields("#DriverName");
+            emptyAllFields("#VehicleNo");
+            emptyAllFields("#ReceivedBy");
+            emptyAllFields("#receivingItemsGrid *");
+        }
+    }
 
-
-    // $("#yarnDeliveryTbodyDetail").html("<tr><td></td><td></td><td></td><td></td><td>No Data Found</td><td></td><td></td><td></td></tr>");
-
+    function emptyAllFields(element) {
+        $(element).val("");
+    }
+    
+    function deleteGridRows(r) {
+        var i = r.parentNode.parentNode.rowIndex;
+        document.getElementById('receivingItemsGrid').deleteRow(i);
+        resetSNO();
+    }
+    
 
 </script>
