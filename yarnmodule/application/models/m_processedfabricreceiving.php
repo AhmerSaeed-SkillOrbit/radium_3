@@ -33,9 +33,10 @@ class M_processedfabricreceiving extends My_Model {
 
     function InsertProcessedFabricReceivingDetail($ProcessedFabricReceivingDetailData) {
 
-        $insert = $this->db->insert_batch('processed_fabric_receiving_detail', $ProcessedFabricReceivingDetailData);
+        $myModel = new My_Model();
+        $insert = $myModel->Insert('processed_fabric_receiving_detail', $ProcessedFabricReceivingDetailData);
         if ($insert) {
-            return True;
+            return $insert;
         } else {
             return False;
         }
@@ -79,12 +80,25 @@ class M_processedfabricreceiving extends My_Model {
         }
     }
 
-    function DeleteGreighFabricDelivery($pfrID, $deleteData) {
+    function DeleteItemStock($pfrDetailID) {
 
         $myModel = new My_Model();
-        $update = $myModel->Update('processed_fabric_receiving', $deleteData, 'processed_fabric_receiving_id', $pfrID);
-        $update = $myModel->Update('processed_fabric_receiving_detail', $deleteData, 'processed_fabric_receiving_id', $pfrID);
-        return $update;
+        $delete = $myModel->Delete('item_stock', 'processed_fabric_receiving_detail_id', $pfrDetailID);
+        return $delete;
+    }
+
+    function DeleteProcessedFabricReceivingDetail($pfrID) {
+
+        $myModel = new My_Model();
+        $delete = $myModel->Delete('processed_fabric_receiving_detail', 'processed_fabric_receiving_id', $pfrID);
+        return $delete;
+    }
+    
+     function DeleteItemLedger($pfrID) {
+
+        $myModel = new My_Model();
+        $delete = $myModel->Delete('item_ledger', 'processed_fabric_receiving_id', $pfrID);
+        return $delete;
     }
 
     function searchProcessedFabricReceiving($SearchKeyword) {
@@ -101,14 +115,7 @@ class M_processedfabricreceiving extends My_Model {
         $insert = $myModel->Insert('item_ledger', $itemLedgerData);
         return $insert;
     }
-
-    function updateItemledger($itemLedgerData, $pfrId) {
-        $myModel = new My_Model();
-        
-        $update = $myModel->Update('item_ledger', $itemLedgerData, 'processed_fabric_receiving_id', $pfrId);
-        return $update;
-    }
-
+    
     function insertItemStock($itemStockData) {
         $myModel = new My_Model();
         $insert = $myModel->Insert('item_stock', $itemStockData);
@@ -120,38 +127,4 @@ class M_processedfabricreceiving extends My_Model {
         $update = $myModel->Update('item_stock', $itemStockData, 'processed_fabric_receiving_detail_id', $pfrId);
         return $update;
     }
-
-    function DeleteItemLedger($gfrID) {
-        $myModel = new My_Model();
-        $delete = $myModel->Delete('item_ledger', 'greigh_fabric_delivery_id', $gfrID);
-        if ($delete) {
-            return TRUE;
-        } else {
-            return FALSE;
-        }
-    }
-
-    function DeleteItemStock($gfrID) {
-;
-        $myModel = new My_Model();
-        $delete = $myModel->Delete('item_stock', 'greigh_fabric_delivery_detail_id', $gfrID);
-        if ($delete) {
-            return TRUE;
-        } else {
-            return FALSE;
-        }
-    }
-
-    function insertMainStock($mainStockData) {
-        $myModel = new My_Model();
-        $insert = $myModel->Insert('item_main_stock', $mainStockData);
-        return $insert;
-    }
-
-    function updateMainStock($mainStockData, $gfrNo) {
-        $myModel = new My_Model();
-        $update = $myModel->Update('item_main_stock', $mainStockData, 'TransactionReferenceNo', $gfrNo);
-        return $update;
-    }
-
 }

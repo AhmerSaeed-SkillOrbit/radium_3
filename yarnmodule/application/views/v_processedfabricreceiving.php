@@ -16,7 +16,7 @@ include 'include/leftmenu.php';
                 <a class="btn btn-app" onclick="reloadForm()">
                     <i class="fa fa-adn"></i> New                  
                 </a>                                                
-                <a id="EditAnchor" class="btn btn-app" onclick="ediForm('Null', 'Null', 'Null', 'Null', 'Null', 'Null', 'Null', 'Null', 'Null', 'Null', 'Null', 'Null', 'Null', 'Null', 'Null', 'editmenu')"> 
+                <a id="EditAnchor" class="btn btn-app" onclick="ediForm('Null','Null', 'Null', 'Null', 'Null', 'Null', 'Null', 'Null', 'Null', 'Null', 'Null', 'Null', 'Null', 'Null', 'Null', 'Null', 'editmenu')"> 
                     <i class="fa fa-edit"></i> Edit
                 </a>
                 <a class="btn btn-app" onclick="resetForm()">
@@ -104,7 +104,7 @@ include 'include/leftmenu.php';
                                     <table id='receivingItemsGrid' class='table table-bordered table-striped' style='margin-top: 60px;'> 
                                         <thead> 
                                             <tr> 
-                                                <th>S.No</th> 
+                                                <th>S.No</th>
                                                 <th>PO #</th> 
                                                 <th>Item Code</th>
                                                 <th>Description</th>
@@ -112,12 +112,13 @@ include 'include/leftmenu.php';
                                                 <th>Rolls</th> 
                                                 <th>Pieces</th>     
                                                 <th>Warehouse</th>       
+                                                <th>ID</th> 
                                                 <th>Add</th> 
                                                 <th>Delete</th> 
                                             </tr> 
                                         </thead> 
                                         <tbody id='receivingItemsTbody'> 
-                                            <tr> 
+                                            <tr>
                                                 <td tag=''>
                                                     <input id='SerialNoDetail' name='SerialNoDetail[]' value='1' type = 'text' class='form-control dcSno' style='width:55px' placeholder = 'SNo' readonly>
                                                 </td>
@@ -180,6 +181,9 @@ include 'include/leftmenu.php';
                                                         <label class='control-label' for='inputError'>Select Warehouse!</label>
                                                     </div>
                                                 </td> 
+                                                <td tag=''>
+                                                    <input id='pfrDetailId' name='pfrDetailId[]' value='' type = 'text' class='form-control' style='width:55px' placeholder = '' readonly>
+                                                </td>
                                                 <td>
                                                     <input id='AddButton' name='AddButton' class='btn btn-primary' style='width:35px;height:30px;text-align:center;float: right; cursor: pointer' value='+' onclick='populateGridRows()' readonly>
                                                 </td> 
@@ -252,6 +256,7 @@ include 'include/leftmenu.php';
                 "<label class='control-label' for='inputError'>Enter Pieces!</label></div></td>" +
                 "<td><select id='warehouse' name='warehouse[]' class='form-control' style='width:200px;'><option value='0'>Select warehouse</option><?php foreach ($warehouseCombo as $key) { ?><option value='<?= $key['Warehouse_id'] ?>'><?= $key['WarehouseName'] ?></option><?php } ?></select><div class='form-group has-error form-error error-warehouse' style='width:0px;margin-left:0px;display:none;'>" +
                 "<label class='control-label' for='inputError'>Select warehouse!</label></div></td>" +
+                "<td tag=''><input id='pfrDetailId' name='pfrDetailId[]' value='' type = 'text' class='form-control' style = 'width: 55px;' placeholder = '' readonly></td>" +
                 "<td><input id='AddButton' name='AddButton' class='btn btn-primary' style='width:35px;height:30px;text-align:center;float: right; cursor: pointer' value='+' onclick='populateGridRows()' readonly></td>" +
                 "<td tag=''><input id='DelButton' name='DelButton' class='btn btn-primary' style='width:35px;height:30px;text-align:center;float: right; cursor: pointer' value='X' onclick='deleteGridRows(this)' readonly></td></tr>";
         $('#receivingItemsTbody').append(items);
@@ -348,7 +353,7 @@ include 'include/leftmenu.php';
                         "<td><?= $key['DriverName'] ?></td>" +
                         "<td><?= $key['ChallanNo'] ?></td>" +
                         "<td><?= $key['ReceivedBy'] ?></td>" +
-                        "<td><a data-dismiss='modal' style='cursor: pointer;' onclick =ediForm('<?= $key['processed_fabric_receiving_id'] ?>','<?= rawurlencode($key['ProcessedFabricReceivingNo']) ?>','<?= rawurlencode($key['CompanyName']) ?>','<?= rawurlencode($key['ReceivingDate']) ?>','<?= rawurlencode($key['ChallanNo']) ?>','<?= rawurlencode($key['DriverName']) ?>','<?= rawurlencode($key['VehicleNo']) ?>','<?= rawurlencode($key['ReceivedBy']) ?>','<?= $key['premier_po'] ?>','<?= $key['item_code'] ?>','','<?= $key['colors'] ?>','<?= $key['rolls'] ?>','<?= $key['pieces'] ?>','<?= $key['warehouseId'] ?>','None')>Edit</a>" +
+                        "<td><a data-dismiss='modal' style='cursor: pointer;' onclick =ediForm('<?= $key['processed_fabric_receiving_detail_id'] ?>','<?= $key['processed_fabric_receiving_id'] ?>','<?= rawurlencode($key['ProcessedFabricReceivingNo']) ?>','<?= rawurlencode($key['CompanyName']) ?>','<?= rawurlencode($key['ReceivingDate']) ?>','<?= rawurlencode($key['ChallanNo']) ?>','<?= rawurlencode($key['DriverName']) ?>','<?= rawurlencode($key['VehicleNo']) ?>','<?= rawurlencode($key['ReceivedBy']) ?>','<?= $key['premier_po'] ?>','<?= $key['item_code'] ?>','','<?= $key['colors'] ?>','<?= $key['rolls'] ?>','<?= $key['pieces'] ?>','<?= $key['warehouseId'] ?>','None')>Edit</a>" +
                         "<span> | </span>" +
                         "<a style='cursor: pointer;' href='<?= base_url() ?>index.php/processedfabricreceiving/Delete/<?= $key['processed_fabric_receiving_id'] ?>'>Delete</a>" +
                         "</td>" +
@@ -356,6 +361,7 @@ include 'include/leftmenu.php';
             "</tbody>" +
                     "<tfoot>" +
                     "<tr>" +
+                    "<th></th>" +
                     "<th></th>" +
                     "<th></th>" +
                     "<th></th>" +
@@ -383,7 +389,7 @@ include 'include/leftmenu.php';
     });
     }
 
-    function ediForm(processedFabricReceivingId, processedFabricReceivingNo, CompanyName, ReceivingDate, ChallanNo, DriverName, VehicleNo, ReceivedBy, PremierPO, ItemCode, Description, Colors, Rolls, Pieces, Warehouse, type) {
+    function ediForm(processedFabricRecevingDetailId, processedFabricReceivingId, processedFabricReceivingNo, CompanyName, ReceivingDate, ChallanNo, DriverName, VehicleNo, ReceivedBy, PremierPO, ItemCode, Description, Colors, Rolls, Pieces, Warehouse, type) {
     if (type === 'editmenu') {
     formMode = "Edit";
             var action = "<?php echo base_url() ?>index.php/processedfabricreceiving/Update";
@@ -408,6 +414,7 @@ include 'include/leftmenu.php';
     else {
     console.log(decodeURI(ItemCode));
             var parsedData = ItemCode.split(',');
+            var pfrDetailId = processedFabricRecevingDetailId.split(',');
             var splitWarehouse = Warehouse.split(',');
             var splitPremierPo = PremierPO.split(',');
 //            var splitDescription = Description.split(',');
@@ -438,11 +445,11 @@ include 'include/leftmenu.php';
                     "<td tag=''><input id='Rolls' name='Rolls[]' value=" + splitRolls[i] + "  type='number' step='any' min='0' class='form-control' style='width:75px'><div class='form-group has-error form-error error-Rolls' style='width:0px;margin-left:0px;display:none;'><label class='control-label' for='inputError'>Enter Rolls!</label></div></td>" +
                     "<td tag=''><input id='Pieces' name='Pieces[]' value=" + splitPieces[i] + " type='number' step='any' min='0' class='form-control' style='width:75px'><div class='form-group has-error form-error error-Pieces' style = 'width:0px;margin-left:0px;display:none;'><label class='control-label' for='inputError'>Enter Rolls!</label></div></td>" +
                     "<td tag=''><select id='warehouse' name='warehouse[]' class='form-control' style='width:200px;'><option value='0'>Select Warehouse</option><?php foreach ($warehouseCombo as $key) { ?> <option " + (splitWarehouse[i] === '<?= $key['Warehouse_id'] ?>' ? "selected" : "") + " value= '<?= $key['Warehouse_id'] ?>'><?= $key['WarehouseName'] ?> </option><?php } ?></select><div class = 'form-group has-error form-error error-warehouse' style = 'width:0px;margin-left:0px;display:none;'> <label class = 'control-label' for='inputError'>Select Warehouse!</label></div></td>" +
+                    "<td tag=''><input id='pfrDetailId' name='pfrDetailId[]' value=" + pfrDetailId[i] + " type = 'text' class='form-control' style = 'width: 55px;' placeholder = '' readonly></td>" +
                     "<td><input id='AddButton' name='AddButton' class='btn btn-primary' style='width:35px;height:30px;text-align:center;float: right; cursor: pointer' value='+' onclick='populateGridRows()' readonly></td>" +
                     "<td tag=''><input id='DelButton' name='DelButton' class='btn btn-primary' style='width:35px;height:30px;text-align:center;float: right; cursor: pointer' value='X' onclick='deleteGridRows(this)' readonly></td></tr>";
                     $("#receivingItemsTbody").html(items);
-                    
-                    $(".itemcodetrigger").trigger("change"); 
+                    $(".itemcodetrigger").trigger("change");
             });
     }
     disableElements("#ProcessorName");
@@ -506,7 +513,7 @@ include 'include/leftmenu.php';
                             "<td>" + val.VehicleNo + "</td>" +
                             "<td>" + val.ChallanNo + "</td>" +
                             "<td>" + val.ReceivedBy + "</td>" +
-                            "<td><a data-dismiss='modal' style='cursor: pointer;' onclick =ediForm('" + val.processed_fabric_receiving_id + "','" + val.ProcessedFabricReceivingNo + "','" + encodeURI(val.CompanyName) + "','" + val.ReceivingDate + "','" + encodeURI(val.ChallanNo) + "','" + encodeURI(val.DriverName) + "','" + encodeURI(val.VehicleNo) + "','" + encodeURI(val.ReceivedBy) + "','" + val.premier_po + "','" + val.item_code + "','','" + encodeURI(val.colors) + "','" + val.rolls + "','" + val.pieces + "','" + val.warehouseId + "','None')>Edit</a>" +
+                            "<td><a data-dismiss='modal' style='cursor: pointer;' onclick =ediForm('" + val.processed_fabric_receiving_detail_id + "','" + val.processed_fabric_receiving_id + "','" + val.ProcessedFabricReceivingNo + "','" + encodeURI(val.CompanyName) + "','" + val.ReceivingDate + "','" + encodeURI(val.ChallanNo) + "','" + encodeURI(val.DriverName) + "','" + encodeURI(val.VehicleNo) + "','" + encodeURI(val.ReceivedBy) + "','" + val.premier_po + "','" + val.item_code + "','','" + encodeURI(val.colors) + "','" + val.rolls + "','" + val.pieces + "','" + val.warehouseId + "','None')>Edit</a>" +
                             "<span> | </span>" +
                             "<a style='cursor: pointer;' href='<?= base_url() ?>index.php/processedfabricreceiving/Delete/'" + val.processed_fabric_receiving_id + "'>Delete</a>" +
                             "</td>" +
@@ -571,7 +578,7 @@ include 'include/leftmenu.php';
                     var parsedData = JSON.parse(data);
                             if (parsedData.length > 0) {
                     $.each(parsedData, function(i, val) {
-                            $(obj).closest('td').next().find('input').val(val.ItemDesc);
+                    $(obj).closest('td').next().find('input').val(val.ItemDesc);
                     });
                     }
                     }
