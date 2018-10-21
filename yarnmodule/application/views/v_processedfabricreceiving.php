@@ -16,7 +16,7 @@ include 'include/leftmenu.php';
                 <a class="btn btn-app" onclick="reloadForm()">
                     <i class="fa fa-adn"></i> New                  
                 </a>                                                
-                <a id="EditAnchor" class="btn btn-app" onclick="ediForm('Null','Null', 'Null', 'Null', 'Null', 'Null', 'Null', 'Null', 'Null', 'Null', 'Null', 'Null', 'Null', 'Null', 'Null', 'Null', 'editmenu')"> 
+                <a id="EditAnchor" class="btn btn-app" onclick="ediForm('Null', 'Null', 'Null', 'Null', 'Null', 'Null', 'Null', 'Null', 'Null', 'Null', 'Null', 'Null', 'Null', 'Null', 'Null', 'Null', 'editmenu')"> 
                     <i class="fa fa-edit"></i> Edit
                 </a>
                 <a class="btn btn-app" onclick="resetForm()">
@@ -111,10 +111,10 @@ include 'include/leftmenu.php';
                                                 <th>Color</th> 
                                                 <th>Rolls</th> 
                                                 <th>Pieces</th>     
-                                                <th>Warehouse</th>       
-                                                <th>ID</th> 
+                                                <th>Warehouse</th>     
                                                 <th>Add</th> 
                                                 <th>Delete</th> 
+                                                <!--<th>ID</th>--> 
                                             </tr> 
                                         </thead> 
                                         <tbody id='receivingItemsTbody'> 
@@ -181,15 +181,15 @@ include 'include/leftmenu.php';
                                                         <label class='control-label' for='inputError'>Select Warehouse!</label>
                                                     </div>
                                                 </td> 
-                                                <td tag=''>
-                                                    <input id='pfrDetailId' name='pfrDetailId[]' value='' type = 'text' class='form-control' style='width:55px' placeholder = '' readonly>
+                                                <td tag='' style="display: none">
+                                                    <input id='pfrDetailId' name='pfrDetailId[]' value='' type = hidden class='form-control' style='width:55px' placeholder = '' readonly>
                                                 </td>
                                                 <td>
                                                     <input id='AddButton' name='AddButton' class='btn btn-primary' style='width:35px;height:30px;text-align:center;float: right; cursor: pointer' value='+' onclick='populateGridRows()' readonly>
                                                 </td> 
                                                 <td tag=''>
                                                     <input id='DelButton' name='DelButton' class='btn btn-primary' style='width:35px;height:30px;text-align:center;float: right; cursor: pointer' value='X' onclick='deleteGridRows(this)' readonly>
-                                                </td>
+                                                </td>                                               
                                             </tr> 
                                         </tbody> 
                                         <tfoot> 
@@ -256,9 +256,10 @@ include 'include/leftmenu.php';
                 "<label class='control-label' for='inputError'>Enter Pieces!</label></div></td>" +
                 "<td><select id='warehouse' name='warehouse[]' class='form-control' style='width:200px;'><option value='0'>Select warehouse</option><?php foreach ($warehouseCombo as $key) { ?><option value='<?= $key['Warehouse_id'] ?>'><?= $key['WarehouseName'] ?></option><?php } ?></select><div class='form-group has-error form-error error-warehouse' style='width:0px;margin-left:0px;display:none;'>" +
                 "<label class='control-label' for='inputError'>Select warehouse!</label></div></td>" +
-                "<td tag=''><input id='pfrDetailId' name='pfrDetailId[]' value='' type = 'text' class='form-control' style = 'width: 55px;' placeholder = '' readonly></td>" +
+                "<td tag='' style='display:none'><input id='pfrDetailId' name='pfrDetailId[]' value='' type = 'text' class='form-control' style = 'width: 55px;' placeholder = '' readonly></td>" +
                 "<td><input id='AddButton' name='AddButton' class='btn btn-primary' style='width:35px;height:30px;text-align:center;float: right; cursor: pointer' value='+' onclick='populateGridRows()' readonly></td>" +
                 "<td tag=''><input id='DelButton' name='DelButton' class='btn btn-primary' style='width:35px;height:30px;text-align:center;float: right; cursor: pointer' value='X' onclick='deleteGridRows(this)' readonly></td></tr>";
+
         $('#receivingItemsTbody').append(items);
         if (formMode === "Edit") {
             resetSNO();
@@ -445,7 +446,7 @@ include 'include/leftmenu.php';
                     "<td tag=''><input id='Rolls' name='Rolls[]' value=" + splitRolls[i] + "  type='number' step='any' min='0' class='form-control' style='width:75px'><div class='form-group has-error form-error error-Rolls' style='width:0px;margin-left:0px;display:none;'><label class='control-label' for='inputError'>Enter Rolls!</label></div></td>" +
                     "<td tag=''><input id='Pieces' name='Pieces[]' value=" + splitPieces[i] + " type='number' step='any' min='0' class='form-control' style='width:75px'><div class='form-group has-error form-error error-Pieces' style = 'width:0px;margin-left:0px;display:none;'><label class='control-label' for='inputError'>Enter Rolls!</label></div></td>" +
                     "<td tag=''><select id='warehouse' name='warehouse[]' class='form-control' style='width:200px;'><option value='0'>Select Warehouse</option><?php foreach ($warehouseCombo as $key) { ?> <option " + (splitWarehouse[i] === '<?= $key['Warehouse_id'] ?>' ? "selected" : "") + " value= '<?= $key['Warehouse_id'] ?>'><?= $key['WarehouseName'] ?> </option><?php } ?></select><div class = 'form-group has-error form-error error-warehouse' style = 'width:0px;margin-left:0px;display:none;'> <label class = 'control-label' for='inputError'>Select Warehouse!</label></div></td>" +
-                    "<td tag=''><input id='pfrDetailId' name='pfrDetailId[]' value=" + pfrDetailId[i] + " type = 'text' class='form-control' style = 'width: 55px;' placeholder = '' readonly></td>" +
+                    "<td tag='' style='display:none'><input id='pfrDetailId' name='pfrDetailId[]' value='' type = 'text' class='form-control' style = 'width: 55px;' placeholder = '' readonly></td>" +
                     "<td><input id='AddButton' name='AddButton' class='btn btn-primary' style='width:35px;height:30px;text-align:center;float: right; cursor: pointer' value='+' onclick='populateGridRows()' readonly></td>" +
                     "<td tag=''><input id='DelButton' name='DelButton' class='btn btn-primary' style='width:35px;height:30px;text-align:center;float: right; cursor: pointer' value='X' onclick='deleteGridRows(this)' readonly></td></tr>";
                     $("#receivingItemsTbody").html(items);
