@@ -122,10 +122,10 @@ class M_processedfabricreceiving extends My_Model {
 
         $myModel = new My_Model();
         $update = $myModel->Update('processed_fabric_receiving', $deleteData, 'processed_fabric_receiving_id', $processedFabricReceivingId);
-        if ($update) {
-            return "Successfully Deleted";
+        if ($update == 1) {
+            return TRUE;
         } else {
-            return "Failed to Delete";
+            return FALSE;
         }
     }
 

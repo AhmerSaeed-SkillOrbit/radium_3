@@ -254,12 +254,8 @@ class Processedfabricreceiving extends CI_Controller {
         $pfrDetailData = $processedFabricReceivingModel->getProcessedFabricReceivingDetailViaProcessedFabricReceivingId($processedFabricReceivingId);
         if ($pfrDetailData != null) {
             $pfrDetailIds = explode(",", $pfrDetailData);
-//            print_r($pfrDetailIds);
             if (count($pfrDetailIds) > 0) {
                 for ($i = 0; $i < count($pfrDetailIds); $i++) {
-//                    echo "<br>";'
-//                    echo "<pre>";
-//                    echo $pfrDetailIds[$i];
                     $processedFabricReceivingModel->DeleteItemStock($pfrDetailIds[$i]);
                 }
             }

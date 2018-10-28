@@ -123,13 +123,13 @@ include 'include/leftmenu.php';
                                                     <input id='SerialNoDetail' name='SerialNoDetail[]' value='1' type = 'text' class='form-control dcSno' style='width:55px' placeholder = 'SNo' readonly>
                                                 </td>
                                                 <td>
-                                                    <select id='PONumber' name='PONumber[]' class='form-control' style='width:200px;'><option value='0'>Select PO Number</option><?php foreach ($customerOrders as $key) { ?><option value='<?= $key['customer_order_id'] ?>'><?= $key['PremierPO'] ?></option><?php } ?></select>
+                                                    <select id='PONumber' name='PONumber[]' class='form-control' style='width:125px;'><option value='0'>Select PO Number</option><?php foreach ($customerOrders as $key) { ?><option value='<?= $key['customer_order_id'] ?>'><?= $key['PremierPO'] ?></option><?php } ?></select>
                                                     <div class='form-group has-error form-error error-PONumber' style='width:0px;margin-left:0px;display:none;'>                                                     
                                                         <label class='control-label' for='inputError'>Select PO Number!</label>
                                                     </div>
                                                 </td>
                                                 <td tag=''>
-                                                    <select id='ItemCode' name='ItemCode[]' class='form-control itemcodetrigger' style='width:200px' onchange='getItemDescription(this)'><option value='0'>Select Item Code</option><?php
+                                                    <select id='ItemCode' name='ItemCode[]' class='form-control itemcodetrigger' style='width:125px' onchange='getItemDescription(this)'><option value='0'>Select Item Code</option><?php
                                                         foreach ($itemList as $key) {
                                                             ?><option value='<?= $key['item_id'] ?>'><?= $key['ItemCode'] ?></option><?php } ?></select>
                                                     <div class='pull-left col-xs-12 col-sm-6 col-md-6 form-group has-error form-error error-ItemCode' style='width:0px;margin-left:0px;display:none;'>
@@ -141,7 +141,7 @@ include 'include/leftmenu.php';
                                                     if ($description) {
                                                         echo $description;
                                                     }
-                                                    ?>' type='text' step='any' class='form-control' style='width:75px'>
+                                                    ?>' type='text' step='any' class='form-control' style='width:125px'>
                                                     <div class='form-group has-error form-error error-Rolls' style='width:0px;margin-left:0px;display:none;'> 
                                                         <label class='control-label' for='inputError'>Enter Description!</label>
                                                     </div>
@@ -242,11 +242,11 @@ include 'include/leftmenu.php';
         var items = [];
         items += "<tr>" +
                 "<td tag=''><input id='SerialNoDetail' name='SerialNoDetail[]' value='" + deliverItemsCount + "' type = 'text' class='form-control dcSno' style='width:55px' placeholder = 'SNo' readonly></td>" +
-                "<td><select id='PONumber' name='PONumber[]' class='form-control' style='width:200px;'><option value='0'>Select PO Number</option><?php foreach ($customerOrders as $key) { ?><option value='<?= $key['customer_order_id'] ?>'><?= $key['PremierPO'] ?></option><?php } ?></select><div class='form-group has-error form-error error-PONumber' style='width:0px;margin-left:0px;display:none;'>" +
+                "<td><select id='PONumber' name='PONumber[]' class='form-control' style='width:125px;'><option value='0'>Select PO Number</option><?php foreach ($customerOrders as $key) { ?><option value='<?= $key['customer_order_id'] ?>'><?= $key['PremierPO'] ?></option><?php } ?></select><div class='form-group has-error form-error error-PONumber' style='width:0px;margin-left:0px;display:none;'>" +
                 "<label class='control-label' for='inputError'>Select PO Number!</label></div></td>" +
-                "<td><select id='ItemCode' name='ItemCode[]' class='form-control itemcodetrigger' style='width:200px;' onchange='getItemDescription(this)'><option value='0'>Select Item Code</option><?php foreach ($itemList as $key) { ?><option value='<?= $key['item_id'] ?>'><?= $key['ItemCode'] ?></option><?php } ?></select><div class='form-group has-error form-error error-ItemCode' style='width:0px;margin-left:0px;display:none;'>" +
+                "<td><select id='ItemCode' name='ItemCode[]' class='form-control itemcodetrigger' style='width:125px;' onchange='getItemDescription(this)'><option value='0'>Select Item Code</option><?php foreach ($itemList as $key) { ?><option value='<?= $key['item_id'] ?>'><?= $key['ItemCode'] ?></option><?php } ?></select><div class='form-group has-error form-error error-ItemCode' style='width:0px;margin-left:0px;display:none;'>" +
                 "<label class='control-label' for='inputError'>Select Item Code!</label></div></td>" +
-                "<td tag=''><input id='Description' name='Description[]' type='text' step='any' class='form-control' style='width:75px'><div class='form-group has-error form-error error-Description' style='width:0px;margin-left:0px;display:none;'>" +
+                "<td tag=''><input id='Description' name='Description[]' type='text' step='any' class='form-control' style='width:125px'><div class='form-group has-error form-error error-Description' style='width:0px;margin-left:0px;display:none;'>" +
                 "<label class='control-label' for='inputError'>Enter Description!</label></div></td>" +
                 "<td tag=''><input id='Color' name='Color[]' type='text' step='any' class='form-control' style='width:75px'><div class='form-group has-error form-error error-Color' style='width:0px;margin-left:0px;display:none;'>" +
                 "<label class='control-label' for='inputError'>Enter Color!</label></div></td>" +
@@ -319,7 +319,7 @@ include 'include/leftmenu.php';
                     "<label>Search</label>" +
                     "</div>" +
                     "<div class='pull-left col-md-4'>" +
-                    "<input id='searchProcessedFabricReceiving' name='searchProcessedFabricReceiving' type='text' class='form-control' onkeyup='search()' placeholder='Search by PFR No.' style='width:200px;margin-left:-100px;'>" +
+                    "<input id='searchProcessedFabricReceiving' name='searchProcessedFabricReceiving' type='text' class='form-control' placeholder='Search by PFR No.' style='width:200px;margin-left:-100px;'>" +
                     "<input id='SearchNow' type='button' value='OK' class='btn btn-primary' onclick='search()' style='width: 100px;margin-left: 110px;margin-top:-58px;'>" +
                     "</div>" +
                     "</div><br><br><br>" +
@@ -439,9 +439,9 @@ include 'include/leftmenu.php';
             $.each(parsedData, function (i, val) {
             items += "<tr>" +
                     "<td tag=''><input id='SerialNoDetail' name='SerialNoDetail[]' value='" + (i + 1) + "' type = 'text' class='form-control dcSno' style = 'width: 55px;' placeholder = 'SNo' readonly></td>" +
-                    "<td tag=''><select id='PONumber' name='PONumber[]' class='form-control' style='width:200px;'><option value='0'>Select PO Number</option><?php foreach ($customerOrders as $key) { ?><option " + (splitPremierPo[i] === '<?= $key['PremierPO'] ?>' ? "selected" : "") + " value='<?= $key['customer_order_id'] ?>'><?= $key['PremierPO'] ?></option><?php } ?></select><div class='form-group has-error form-error error-PONumber' style='width:0px;margin-left:0px;display:none;'><label class='control-label' for='inputError'>Select PO Number!</label></div></td>" +
-                    "<td tag=''><select id='ItemCode' name='ItemCode[]' class='form-control itemcodetrigger' style='width:200px' onchange='getItemDescription(this)'><option value='0'>Select Item Code</option><?php foreach ($itemList as $key) { ?><option " + (parsedData[i] === '<?= $key['ItemCode'] ?>' ? "selected" : "") + " value = '<?= $key['item_id'] ?>'><?= $key['ItemCode'] ?></option><?php } ?></select><div class = 'pull-left col-xs-12 col-sm-6 col-md-6 form-group has-error form-error error-ItemCode' style = 'width:0px;margin-left:0px;display:none;'></div></td> " +
-                    "<td tag=''><input id='Description' name='Description[]' value='' type='text' step='any' class='form-control' style='width:75px'><div class='form-group has-error form-error error-Rolls' style='width:0px;margin-left:0px;display:none;'><label class='control-label' for='inputError'>Enter Description!</label></div></td>" +
+                    "<td tag=''><select id='PONumber' name='PONumber[]' class='form-control' style='width:125px;'><option value='0'>Select PO Number</option><?php foreach ($customerOrders as $key) { ?><option " + (splitPremierPo[i] === '<?= $key['PremierPO'] ?>' ? "selected" : "") + " value='<?= $key['customer_order_id'] ?>'><?= $key['PremierPO'] ?></option><?php } ?></select><div class='form-group has-error form-error error-PONumber' style='width:0px;margin-left:0px;display:none;'><label class='control-label' for='inputError'>Select PO Number!</label></div></td>" +
+                    "<td tag=''><select id='ItemCode' name='ItemCode[]' class='form-control itemcodetrigger' style='width:125px' onchange='getItemDescription(this)'><option value='0'>Select Item Code</option><?php foreach ($itemList as $key) { ?><option " + (parsedData[i] === '<?= $key['ItemCode'] ?>' ? "selected" : "") + " value = '<?= $key['item_id'] ?>'><?= $key['ItemCode'] ?></option><?php } ?></select><div class = 'pull-left col-xs-12 col-sm-6 col-md-6 form-group has-error form-error error-ItemCode' style = 'width:0px;margin-left:0px;display:none;'></div></td> " +
+                    "<td tag=''><input id='Description' name='Description[]' value='' type='text' step='any' class='form-control' style='width:125px'><div class='form-group has-error form-error error-Rolls' style='width:0px;margin-left:0px;display:none;'><label class='control-label' for='inputError'>Enter Description!</label></div></td>" +
                     "<td tag=''><input id='Color' name='Color[]' value=" + splitColors[i] + " type='text' step='any' class='form-control' style='width:75px'><div class = 'form-group has-error form-error error-Rolls' style = 'width:0px;margin-left:0px;display:none;'><label class = 'control-label' for = 'inputError' > Enter Color! < /label></div></td>" +
                     "<td tag=''><input id='Rolls' name='Rolls[]' value=" + splitRolls[i] + "  type='number' step='any' min='0' class='form-control' style='width:75px'><div class='form-group has-error form-error error-Rolls' style='width:0px;margin-left:0px;display:none;'><label class='control-label' for='inputError'>Enter Rolls!</label></div></td>" +
                     "<td tag=''><input id='Pieces' name='Pieces[]' value=" + splitPieces[i] + " type='number' step='any' min='0' class='form-control' style='width:75px'><div class='form-group has-error form-error error-Pieces' style = 'width:0px;margin-left:0px;display:none;'><label class='control-label' for='inputError'>Enter Rolls!</label></div></td>" +
@@ -515,7 +515,7 @@ include 'include/leftmenu.php';
                             "<td>" + val.ReceivedBy + "</td>" +
                             "<td><a data-dismiss='modal' style='cursor: pointer;' onclick =ediForm('" + val.processed_fabric_receiving_detail_id + "','" + val.processed_fabric_receiving_id + "','" + val.ProcessedFabricReceivingNo + "','" + encodeURI(val.CompanyName) + "','" + val.ReceivingDate + "','" + encodeURI(val.ChallanNo) + "','" + encodeURI(val.DriverName) + "','" + encodeURI(val.VehicleNo) + "','" + encodeURI(val.ReceivedBy) + "','" + val.premier_po + "','" + val.item_code + "','','" + encodeURI(val.colors) + "','" + val.rolls + "','" + val.pieces + "','" + val.warehouseId + "','None')>Edit</a>" +
                             "<span> | </span>" +
-                            "<a style='cursor: pointer;' href='<?= base_url() ?>index.php/processedfabricreceiving/Delete/'" + val.processed_fabric_receiving_id + "'>Delete</a>" +
+                            "<a style='cursor: pointer;' href='<?= base_url() ?>index.php/processedfabricreceiving/Delete/"+val.processed_fabric_receiving_id+"'>Delete</a>" +   //
                             "</td>" +
                             "</tr>";
                     });
