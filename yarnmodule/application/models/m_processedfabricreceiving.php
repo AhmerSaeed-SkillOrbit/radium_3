@@ -80,25 +80,15 @@ class M_processedfabricreceiving extends My_Model {
         }
     }
 
-    function DeleteItemStock($pfrDetailID) {
-
-        $myModel = new My_Model();
-        $delete = $myModel->Delete('item_stock', 'processed_fabric_receiving_detail_id', $pfrDetailID);
-        return $delete;
-    }
-
-    function DeleteProcessedFabricReceivingDetail($pfrID) {
-
-        $myModel = new My_Model();
-        $delete = $myModel->Delete('processed_fabric_receiving_detail', 'processed_fabric_receiving_id', $pfrID);
-        return $delete;
-    }
-    
-     function DeleteItemLedger($pfrID) {
-
-        $myModel = new My_Model();
-        $delete = $myModel->Delete('item_ledger', 'processed_fabric_receiving_id', $pfrID);
-        return $delete;
+    function getProcessedFabricReceivingDetailViaProcessedFabricReceivingId($processedFabricReceivingId) {
+        $this->db->select('processed_fabric_receiving_detail_id');
+        $this->db->from('view_processedfabricreceiving_info');
+        $this->db->where('processed_fabric_receiving_id', $processedFabricReceivingId);
+        $this->db->where('isActive', 1);
+        $searchData = $this->db->get()->row();
+        if (isset($searchData)) {
+            return $searchData->processed_fabric_receiving_detail_id;
+        }
     }
 
     function searchProcessedFabricReceiving($SearchKeyword) {
@@ -115,7 +105,7 @@ class M_processedfabricreceiving extends My_Model {
         $insert = $myModel->Insert('item_ledger', $itemLedgerData);
         return $insert;
     }
-    
+
     function insertItemStock($itemStockData) {
         $myModel = new My_Model();
         $insert = $myModel->Insert('item_stock', $itemStockData);
@@ -127,4 +117,36 @@ class M_processedfabricreceiving extends My_Model {
         $update = $myModel->Update('item_stock', $itemStockData, 'processed_fabric_receiving_detail_id', $pfrId);
         return $update;
     }
+
+    function DeleteProcessedFabricReceivingRecord($processedFabricReceivingId, $deleteData) {
+
+        $myModel = new My_Model();
+        $update = $myModel->Update('processed_fabric_receiving', $deleteData, 'processed_fabric_receiving_id', $processedFabricReceivingId);
+        if ($update) {
+            return "Successfully Deleted";
+        } else {
+            return "Failed to Delete";
+        }
+    }
+
+    function DeleteItemStock($pfrDetailID) {
+        $myModel = new My_Model();
+        $delete = $myModel->Delete('item_stock', 'processed_fabric_receiving_detail_id', $pfrDetailID);
+        return $delete;
+    }
+
+    function DeleteProcessedFabricReceivingDetail($pfrID) {
+
+        $myModel = new My_Model();
+        $delete = $myModel->Delete('processed_fabric_receiving_detail', 'processed_fabric_receiving_id', $pfrID);
+        return $delete;
+    }
+
+    function DeleteItemLedger($pfrID) {
+
+        $myModel = new My_Model();
+        $delete = $myModel->Delete('item_ledger', 'processed_fabric_receiving_id', $pfrID);
+        return $delete;
+    }
+
 }

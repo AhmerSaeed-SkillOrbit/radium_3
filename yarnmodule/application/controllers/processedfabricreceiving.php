@@ -167,7 +167,7 @@ class Processedfabricreceiving extends CI_Controller {
             //on behalf of processed_fabric_receiving_detail id
             $processedFabricReceivingModel->DeleteItemStock($pfrDetalId[$Count]);
         }
-        
+
         //deleting record from processedfabricreceivingdetail table 
         //on behalf of processed_fabricreceiving_id
         $processedFabricReceivingModel->DeleteProcessedFabricReceivingDetail($pfrId);
@@ -186,7 +186,7 @@ class Processedfabricreceiving extends CI_Controller {
             'ModifiedDate' => $myModel->getFieldsValue()['ModifiedDate']
         );
         $updateProcessedFabricReceivingData = $processedFabricReceivingModel->UpdateProcessedFabricReceiving($pfrId, $processedFabricReceivingData);
-        
+
         //now adding processefabricreceivingdetail
         //and item_stock record
         if ($updateProcessedFabricReceivingData) {
@@ -218,7 +218,7 @@ class Processedfabricreceiving extends CI_Controller {
                         'user_id' => 0
                     );
                     $processedFabricReceivingModel->insertItemStock($itemStockData);
-                } 
+                }
             }
 
             if ($updateProcessedFabricReceivingData) {
@@ -238,20 +238,44 @@ class Processedfabricreceiving extends CI_Controller {
         redirect(base_url() . "index.php/processedfabricreceiving/index");
     }
 
-    function Delete($yarnDeliveryID) {
-        $yarnDeliveryModel = new M_yarndelivery();
-        $purposeID = $this->input->post('idPurpose');
-        $yarnDeliveryData = array(
+    function Delete($processedFabricReceivingId) {
+        $processedFabricReceivingModel = new M_processedfabricreceiving();
+        $deleteData = array(
             'isActive' => 0,
         );
-        $deleteYarnDelivery = $yarnDeliveryModel->DeleteYarnDelivery($yarnDeliveryID, $yarnDeliveryData);
-        $deleteStock = $yarnDeliveryModel->DeleteStock($yarnDeliveryID);
-        $deleteLedger = $yarnDeliveryModel->DeleteLedger($yarnDeliveryID);
-        if ($purposeID == 1) {
-            $deleteWeaverLedger = $yarnDeliveryModel->DeleteWeavingLegder($yarnDeliveryID);
+
+        //first fetch processedFabricReceivingDetail record
+        //via provided processedFabricReceivingId
+        //then delete item_stock record on basis of fetched processedFabricReceivingDetailId
+        //then delete item_ledger record via provided processedFabricReceivingId
+        //then delete processedFabricReceivingDetail record via provided processedFabricReceivingId
+        //then delete processedFabricReceiving recor via provided processedFabricReceivingId
+
+        $pfrDetailData = $processedFabricReceivingModel->getProcessedFabricReceivingDetailViaProcessedFabricReceivingId($processedFabricReceivingId);
+        if ($pfrDetailData != null) {
+            $pfrDetailIds = explode(",", $pfrDetailData);
+//            print_r($pfrDetailIds);
+            if (count($pfrDetailIds) > 0) {
+                for ($i = 0; $i < count($pfrDetailIds); $i++) {
+//                    echo "<br>";'
+//                    echo "<pre>";
+//                    echo $pfrDetailIds[$i];
+                    $processedFabricReceivingModel->DeleteItemStock($pfrDetailIds[$i]);
+                }
+            }
         }
-        $this->session->set_flashdata('deletemessage', $deleteYarnDelivery);
-        redirect(base_url() . "index.php/yarndelivery/index");
+        $processedFabricReceivingModel->DeleteItemLedger($processedFabricReceivingId);
+        $processedFabricReceivingModel->DeleteProcessedFabricReceivingDetail($processedFabricReceivingId);
+        $delete = $processedFabricReceivingModel->DeleteProcessedFabricReceivingRecord($processedFabricReceivingId, $deleteData);
+
+        if ($delete == 1) {
+            $deleteMessage = "Successfully Deleted";
+            $this->session->set_flashdata('deletemessage', $deleteMessage);
+        } else {
+            $deleteMessage = "Failed to Delete";
+            $this->session->set_flashdata('deletemessage', $deleteMessage);
+        }
+        redirect(base_url() . "index.php/processedfabricreceiving/index");
     }
 
     function search() {

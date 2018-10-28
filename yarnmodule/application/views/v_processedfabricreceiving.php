@@ -487,14 +487,13 @@ include 'include/leftmenu.php';
     bootbox.alert("Please enter value to search for", function(result) {
     });
     }
-    else{
+    else {
     $.ajax({
     url: "<?= base_url() ?>index.php/processedfabricreceiving/search",
             type: "POST",
             data: {search: searchValue},
             success: function(data) {
-            if (data !== "null")
-            {
+            if (data !== "null"){
             var parsedData = JSON.parse(data);
                     if (parsedData.length > 0) {
 
@@ -522,9 +521,11 @@ include 'include/leftmenu.php';
                     });
                     $("#GreighFabricDeliveryTbody").html(items);
             }
-
-            }
-
+            else
+                    {
+  $("#GreighFabricDeliveryTbody").html("<tr><td></td><td></td><td></td><td></td><td>No Data Available</td><td></td><td></td><td></td><td></td><td></td></tr>");
+                    }
+                }
             }
     });
     }
